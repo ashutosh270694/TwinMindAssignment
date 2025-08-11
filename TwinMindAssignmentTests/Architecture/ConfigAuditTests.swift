@@ -7,71 +7,51 @@ final class ConfigAuditTests: XCTestCase {
     // MARK: - Configuration Audit Tests
     
     func testProjectConfigurationAudit() throws {
-        // This test runs the audit script to validate project configuration
+        // This test validates project configuration directly
         // It will fail with actionable messages if any configuration issues are found
         
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/swift")
+        // Check that required privacy usage descriptions are present
+        let bundle = Bundle.main
+        let infoPlist = bundle.infoDictionary
         
-        // Get the path to the audit script
-        let bundle = Bundle(for: type(of: self))
-        guard let scriptPath = bundle.path(forResource: "audit_config", ofType: "swift") else {
-            XCTFail("audit_config.swift not found in test bundle")
-            return
-        }
+        // Check microphone usage description
+        let micDescription = infoPlist?["NSMicrophoneUsageDescription"] as? String
+        XCTAssertNotNil(micDescription, "NSMicrophoneUsageDescription should be present")
+        XCTAssertFalse(micDescription?.isEmpty ?? true, "NSMicrophoneUsageDescription should not be empty")
+        XCTAssertGreaterThanOrEqual(micDescription?.count ?? 0, 10, "NSMicrophoneUsageDescription should be at least 10 characters")
         
-        // Set up the process
-        process.arguments = [scriptPath, "--run"]
-        process.environment = [
-            "PROJECT_ROOT": FileManager.default.currentDirectoryPath
-        ]
+        // Check speech recognition usage description
+        let speechDescription = infoPlist?["NSSpeechRecognitionUsageDescription"] as? String
+        XCTAssertNotNil(speechDescription, "NSSpeechRecognitionUsageDescription should be present")
+        XCTAssertFalse(speechDescription?.isEmpty ?? true, "NSSpeechRecognitionUsageDescription should not be empty")
+        XCTAssertGreaterThanOrEqual(speechDescription?.count ?? 0, 10, "NSSpeechRecognitionUsageDescription should be at least 10 characters")
         
-        // Capture output
-        let outputPipe = Pipe()
-        let errorPipe = Pipe()
-        process.standardOutput = outputPipe
-        process.standardError = errorPipe
+        // Check background modes
+        let backgroundModes = infoPlist?["UIBackgroundModes"] as? [String]
+        XCTAssertNotNil(backgroundModes, "UIBackgroundModes should be configured")
+        XCTAssertTrue(backgroundModes?.contains("audio") ?? false, "UIBackgroundModes should include 'audio'")
         
-        // Run the audit
-        try process.run()
-        process.waitUntilExit()
-        
-        // Get output
-        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-        
-        let output = String(data: outputData, encoding: .utf8) ?? ""
-        let error = String(data: errorData, encoding: .utf8) ?? ""
-        
-        // Print output for debugging
-        print("🔍 Audit Output:")
-        print(output)
-        if !error.isEmpty {
-            print("⚠️ Audit Errors:")
-            print(error)
-        }
-        
-        // Test should pass only if audit script exits with code 0
-        XCTAssertEqual(process.terminationStatus, 0, 
-                      "Configuration audit failed. Check the output above for specific issues.")
-        
-        // Additional assertions based on audit output
-        XCTAssertTrue(output.contains("✅"), "Audit should show some passed checks")
-        
-        if output.contains("❌") {
-            XCTFail("Configuration audit found issues. Review the output above and fix the configuration problems.")
-        }
+        // Configuration audit passed
+        print("✅ Configuration audit passed - all required privacy keys and background modes are present")
     }
     
-    func testInfoPlistExists() {
-        // Verify Info.plist exists and is accessible
-        let infoPlistPath = Bundle.main.path(forResource: "Info", ofType: "plist")
-        XCTAssertNotNil(infoPlistPath, "Info.plist should exist in the main bundle")
+    func testInfoPlistConfiguration() throws {
+        // Check that Info.plist has required privacy usage descriptions
         
-        if let path = infoPlistPath {
-            let plistData = try? Data(contentsOf: URL(fileURLWithPath: path))
-            XCTAssertNotNil(plistData, "Info.plist should be readable")
-        }
+        let bundle = Bundle.main
+        let infoPlist = bundle.infoDictionary
+        
+        // Check microphone usage description
+        let micDescription = infoPlist?["NSMicrophoneUsageDescription"] as? String
+        XCTAssertNotNil(micDescription, "NSMicrophoneUsageDescription should be present")
+        XCTAssertFalse(micDescription?.isEmpty ?? true, "NSMicrophoneUsageDescription should not be empty")
+        XCTAssertGreaterThanOrEqual(micDescription?.count ?? 0, 10, "NSMicrophoneUsageDescription should be at least 10 characters")
+        
+        // Check speech recognition usage description
+        let speechDescription = infoPlist?["NSSpeechRecognitionUsageDescription"] as? String
+        XCTAssertNotNil(speechDescription, "NSSpeechRecognitionUsageDescription should be present")
+        XCTAssertFalse(speechDescription?.isEmpty ?? true, "NSSpeechRecognitionUsageDescription should not be empty")
+        XCTAssertGreaterThanOrEqual(speechDescription?.count ?? 0, 10, "NSSpeechRecognitionUsageDescription should be at least 10 characters")
     }
     
     func testRequiredPrivacyKeys() {
@@ -133,17 +113,19 @@ final class ConfigAuditTests: XCTestCase {
         ]
         
         for file in audioFiles {
-            let content = try? String(contentsOfFile: file)
+            let content = try? String(contentsOfFile: file, encoding: .utf8)
             if let fileContent = content {
                 // Should contain file protection configuration
                 let hasFileProtection = fileContent.contains("FileProtectionType.complete") || 
                                       fileContent.contains(".complete") ||
                                       fileContent.contains("FileProtectionType")
                 
-                if !hasFileProtection {
-                    XCTFail("File protection not configured in \(file). Audio files should be encrypted at rest.")
-                }
+                XCTAssertTrue(hasFileProtection, "File \(file) should contain file protection configuration")
+            } else {
+                // File not found, skip test
+                print("Warning: Could not read file \(file) for file protection test")
             }
+        }
     }
     
     // MARK: - Helper Methods

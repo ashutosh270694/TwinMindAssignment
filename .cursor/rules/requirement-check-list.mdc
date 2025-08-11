@@ -1,5 +1,436 @@
 ---
-description:
-globs:
-alwaysApply: false
+alwaysApply: true
 ---
+
+Title: Audio Recorder + 30s Transcription (iOS • Build+Tests • SOLID • Clean Architecture • SwiftData • Privacy • Failure Handling • Background)
+
+Rule:
+After EVERY code change or suggestion in this repo, perform the SHIP-READY GATE below. Do not finalize your answer until you’ve:
+1) ensured the project builds,
+2) ensured existing tests pass and behavior is preserved,
+3) validated SOLID + Clean Architecture,
+4) confirmed testability (DI seams, protocol boundaries, fakes),
+5) implemented robust failure/exception handling,
+6) satisfied ALL functional requirements of this assignment (audio, 30s transcription, SwiftData, UI/UX),
+7) satisfied performance, security, privacy, and background behavior,
+8) produced the Gate Report (format at bottom).
+
+If any step cannot run here, say so explicitly and *simulate* it with concrete reasoning tied to files/lines and exact shell commands to run locally/CI.
+
+──────────────────────────────────────────────────────────────────────────────
+BUILD & TEST GATE (Xcode)
+• Replace placeholders if known:
+  Build:
+    xcodebuild -workspace <WORKSPACE>.xcworkspace -scheme <SCHEME> \
+      -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15' \
+      -configuration Debug clean build
+  (SwiftPM fallback): swift build
+
+• Tests (keep green; do not weaken):
+    xcodebuild test -workspace <WORKSPACE>.xcworkspace -scheme <SCHEME> \
+      -destination 'platform=iOS Simulator,name=iPhone 15'
+  (If Fastlane configured): bundle exec fastlane scan
+
+• Static checks (if present):
+    swiftlint --strict
+    swiftformat . --lint
+  Treat reported violations as ❌ unless justified with file:line.
+
+• Assets/LFS sanity (if repo uses them): verify referenced asset paths exist and compile.
+
+──────────────────────────────────────────────────────────────────────────────
+ARCHITECTURE & SOLID
+SOLID
+- S: Single Responsibility — no “god” ViewModels/Controllers doing networking + storage + formatting.
+- O: Open/Closed — features via composition/extension; avoid editing core types for new behavior.
+- L: Liskov — subtypes don’t weaken contracts.
+- I: Interface Segregation — small protocols; no empty stub impls.
+- D: Dependency Inversion — high-level depends on abstractions, not concrete frameworks.
+
+Clean Architecture boundaries
+- Domain: pure Swift; NO UIKit/SwiftUI/URLSession/SwiftData types.
+- Data: networking, SwiftData/DB, file I/O; depends on Domain protocols only.
+- Presentation: UIKit/SwiftUI/Combine; talks to Domain abstractions only; NO networking/persistence.
+- App/Wiring: composition root; resolves dependencies; no business logic.
+
+For any violation, refactor or justify (file:line, trade-offs).
+
+──────────────────────────────────────────────────────────────────────────────
+TESTABILITY
+- Constructor injection (or factory) for collaborators; avoid hidden singletons.
+- Side effects behind protocols (Clock, UUIDProvider, NetworkClient, Storage, Transcriber).
+- Async APIs use `async/await` (`async throws`) and are faked in tests.
+- Add/adjust tests whenever public behavior changes.
+- Snapshot tests for UI where feasible; otherwise document deltas.
+
+──────────────────────────────────────────────────────────────────────────────
+FAILURE / EXCEPTION-HANDLING
+A. Identify failure points: networking (timeouts/5xx/decoding), file I/O, SwiftData saves, audio interruptions & route changes, permission denials, cancellation, storage full, background limits, data corruption.
+B. Coding rules (❌ on violation):
+- No `try!` in production; no force-unwraps `!` on changed lines (except IBOutlets). Use `guard let`/`do-catch`.
+- No empty `catch {}`; map/log/rethrow with context. Typed `enum Error` in each module, preserving underlying error.
+- Distinguish programmer vs runtime errors (assert in DEBUG only).
+- Use `defer` for cleanup (files/streams/AV, observers).
+- UI updates on main thread (`@MainActor` / `DispatchQueue.main`).
+- Handle `Task.isCancelled` explicitly; treat cancellation as non-error.
+- Retriable ops: bounded exponential backoff with jitter (max 3) for idempotent requests only.
+- Convert `OSStatus`/`NSError` to typed errors; include human-readable message and `underlying`.
+- Unified logging via `Logger` (no secrets/PII).
+
+Automated grep guards (optional in CI):
+  git diff --name-only HEAD | xargs grep -n "try!" && echo "❌ try! found" && exit 1 || true
+  git diff --name-only HEAD | xargs grep -n "fatalError(" && echo "⚠️ fatalError found; justify or remove"
+
+──────────────────────────────────────────────────────────────────────────────
+AUDIO RECORDING SYSTEM (AVAudioEngine)
+Must satisfy:
+- Session: configure `AVAudioSession` for recording (category `.playAndRecord`, options e.g. `.allowBluetooth`, `.defaultToSpeaker` as needed); set preferred sample rate/IO buffer duration; activate/deactivate with error handling.
+- Route changes: observe `AVAudioSession.routeChangeNotification`; detect headphone/Bluetooth plug/unplug and rewire engine; persist/restore state.
+- Interruptions: observe `AVAudioSession.interruptionNotification`; pause on begin; resume if `.shouldResume`.
+- Background recording: enable *Background Modes → Audio*; keep engine/mixer running in background; ensure low CPU usage; safe teardown on termination.
+- Recording quality: configurable sample rate, bit depth/format; document defaults.
+- Real-time monitoring: optional level meter/waveform.
+- Edge cases: recording start failures, permission denied/revoked, storage limitations (preflight available space check).
+
+Verify in code and tests (simulate notifications & route changes).
+
+──────────────────────────────────────────────────────────────────────────────
+TIMED BACKEND TRANSCRIPTION (30s)
+Must satisfy:
+- Automatic Segmentation: split stream into time-based segments (default 30s; configurable). Handle drift (target 30s ±0.5s) and partial tail segment.
+- On-the-fly: upload each segment immediately after cut; UI shows rolling transcript without waiting for session end.
+- API Integration: real endpoint (e.g., Whisper). Use HTTPS, JSON/Multipart as per API; include request IDs for tracing.
+- Retry Logic: exponential backoff with jitter (max 3) on 5xx/timeouts/network loss; no retry on 4xx (except 429 with backoff).
+- Concurrent Processing: limit in-flight uploads (e.g., 2–4); dedupe by content hash + session/segment ID; preserve order in UI.
+- Secure Transmission: TLS; (optional) cert pinning if configured; redact secrets in logs.
+- Offline Queuing: persist segments to a local queue (SwiftData) when offline; auto-flush on connectivity regain; FIFO with backpressure.
+- Fallback: if a segment fails to transcribe 5 consecutive times, switch to local STT (Apple Speech / local Whisper) for subsequent segments until remote health recovers; mark provenance per segment.
+
+Testing:
+- Unit tests for: segmentation timing, backoff policy, dedupe, offline queue, fallback trigger/reset.
+- Integration tests: fake server with 200/429/500/timeouts; ensure UI continues streaming transcript.
+
+──────────────────────────────────────────────────────────────────────────────
+SWIFTData INTEGRATION (large datasets)
+Data model (example; adapt as needed):
+- `RecordingSession { id, createdAt, duration, title?, deviceInfo?, segments [Segment] }`
+- `Segment { id, session, index, startAt, endAt, audioURL, status(.queued/.uploading/.done/.failed), transcript? [Transcription]? }`
+- `Transcription { id, segment, text, confidence?, source(.remote/.local), createdAt, lang? }`
+
+Requirements:
+- Relationships: proper `@Relationship` between Session ↔ Segments ↔ Transcriptions.
+- Indexing/Queries: indexes on (sessionId, index), createdAt; fast fetch for last N segments.
+- Performance: efficient with 1000+ sessions, 10k+ segments (paging, batched fetch, predicates, projections; no N+1).
+- Background saves: off main thread; error surfaced; retry with backoff on transient store errors.
+- Migrations: provide vNext plan if schema changes.
+
+Tests:
+- CRUD tests at scale (seed 10k segments); measure fetch time; verify memory stays bounded.
+
+──────────────────────────────────────────────────────────────────────────────
+UI / UX
+Must include:
+- Recording Controls: start/stop/pause with visual feedback; disabled states while initializing/tearing down.
+- Session List: grouped by date; fast search/filter; virtualization (diffable data source / SwiftUI efficient lists).
+- Session Detail: segments with status & text; live updates as transcription arrives.
+- Real-time indicators: transcription progress, network offline/online status.
+- Performance: smooth scrolling with large datasets (no synchronous large fetch on main).
+- Accessibility: VoiceOver labels, traits, hints; Dynamic Type; color contrast.
+- Design niceties: loading states, pull-to-refresh, pagination where applicable.
+
+Tests:
+- UI logic tests for state machines (recording, uploading, failed, resumed).
+- (Optional) snapshot tests for critical screens.
+
+──────────────────────────────────────────────────────────────────────────────
+ERRORS & EDGE CASES (must handle)
+- Mic permission denied/revoked (prompt flow, disabled UI).
+- Insufficient storage (preflight check; user message; auto-cleanup strategy).
+- Network failures during transcription (retries/backoff/queue).
+- App termination during recording (graceful stop; last chunk persisted).
+- Route changes mid-recording (resume or user prompt).
+- Background limits (ensure audio mode; schedule background processing tasks if needed).
+- Transcription service errors (surface + fallback).
+- Data corruption (verify files before upload; checksums; safe deletion/quarantine).
+
+──────────────────────────────────────────────────────────────────────────────
+PERFORMANCE
+- Memory: stream to file; avoid loading large audio blobs wholly into RAM.
+- Battery: efficient buffers; avoid tight timers; coalesce uploads; prefer background-friendly APIs.
+- Storage: rolling cleanup policy (e.g., LRU or max total size / max age). User-facing “Manage Storage”.
+
+──────────────────────────────────────────────────────────────────────────────
+SECURITY & PRIVACY
+- At Rest: encrypt audio files (`FileProtectionType.complete` or equivalent) and/or custom encryption layer if required.
+- In Transit: HTTPS; (optional) cert pinning if configured; redact tokens in logs.
+- Tokens: store in Keychain; never in UserDefaults or plist.
+- Privacy usage strings (Info.plist) — **Gate fails if missing/weak (<10 chars or TODO/TBD)**:
+   • NSMicrophoneUsageDescription
+   • NSSpeechRecognitionUsageDescription (if Apple Speech used)
+   • NSLocalNetworkUsageDescription (+ NSBonjourServices if LAN discovery used)
+   • NSPhotoLibraryAddUsageDescription (only if exporting to Photos)
+- Background Modes (Info.plist): `audio` (required), optionally `processing` if using BGProcessingTask for catch-up uploads.
+- Optional shell checks (replace PLIST path):
+    PLIST="<PLIST_PATH/Info.plist>"
+    /usr/libexec/PlistBuddy -c "Print :NSMicrophoneUsageDescription" "$PLIST" >/dev/null || { echo "❌ Missing NSMicrophoneUsageDescription"; exit 1; }
+    /usr/libexec/PlistBuddy -c "Print :UIBackgroundModes" "$PLIST" | grep -q "audio" || { echo "❌ Missing Background Mode: audio"; exit 1; }
+
+──────────────────────────────────────────────────────────────────────────────
+DELIVERABLES & DOCUMENTATION
+- README: setup, run, environment vars, API config, sample creds, known caveats.
+- Architecture.md: module boundaries, DI graph, why AVAudioEngine, segmentation strategy, concurrency model.
+- AudioSystem.md: session config, route/interruption handling, background strategy.
+- DataModel.md: SwiftData schema, indexes, paging strategy, migration plan.
+- KnownIssues.md: limitations, TODOs with priorities.
+- Git: meaningful commit history showing incremental development.
+
+──────────────────────────────────────────────────────────────────────────────
+TESTING MATRIX
+- Unit: domain logic, segmentation timing, retry/backoff, queue, fallback switch.
+- Integration: audio start/stop, route/interrupt notifications, API client contract.
+- Edge-case: permission denied, storage full, network offline → online resume, cancellation.
+- Performance: dataset scale (≥10k segments) fetch time assertions.
+- UI state: recording/transcribing/failed/resumed flows.
+
+──────────────────────────────────────────────────────────────────────────────
+BONUS (nice-to-have, not required for gate unless specified)
+- Waveform/Level meters in real time.
+- Export sessions (WAV/M4A + JSON transcript).
+- Full-text search across transcriptions.
+- Custom audio processing (e.g., noise reduction).
+
+──────────────────────────────────────────────────────────────────────────────
+GATE REPORT — append this to EVERY answer (format EXACTLY)
+
+GATE REPORT
+Build: ✅/❌  (command used + 1–2 line summary)
+Tests: ✅/❌  (total/failed/skipped; note any changes)
+Static checks: ✅/❌  (lint/format issues)
+Audio System: ✅/❌  (session config; route/interrupt handling; background mode; quality; monitoring)
+Transcription (30s): ✅/❌  (segmentation timing; concurrency limit; retry/backoff; offline queue; fallback status)
+SwiftData: ✅/❌  (schema/relations; indexes; paging; background saves; scale checks)
+UI/UX: ✅/❌  (controls; lists; live updates; performance; accessibility)
+Failure Handling: ✅/❌  (force-unwrap/try! removed; error mapping; cleanup; cancellation)
+Performance: ✅/❌  (memory; battery; storage cleanup policy)
+Security/Privacy: ✅/❌  (encryption at rest; Keychain; TLS; Info.plist usage strings; background modes)
+Docs/Deliverables: ✅/❌  (README; Architecture; AudioSystem; DataModel; KnownIssues; commits)
+Notes/Risks: short bullets
+Next fixes: numbered steps
+
+Only produce code that passes the gate, or clearly mark ❌ with the shortest path to green. If commands cannot run here, provide the exact commands and simulate outcomes using the current diff and file references.
+Title: Audio Recorder + 30s Transcription (iOS • Build+Tests • SOLID • Clean Architecture • SwiftData • Privacy • Failure Handling • Background)
+
+Rule:
+After EVERY code change or suggestion in this repo, perform the SHIP-READY GATE below. Do not finalize your answer until you’ve:
+1) ensured the project builds,
+2) ensured existing tests pass and behavior is preserved,
+3) validated SOLID + Clean Architecture,
+4) confirmed testability (DI seams, protocol boundaries, fakes),
+5) implemented robust failure/exception handling,
+6) satisfied ALL functional requirements of this assignment (audio, 30s transcription, SwiftData, UI/UX),
+7) satisfied performance, security, privacy, and background behavior,
+8) produced the Gate Report (format at bottom).
+
+If any step cannot run here, say so explicitly and *simulate* it with concrete reasoning tied to files/lines and exact shell commands to run locally/CI.
+
+──────────────────────────────────────────────────────────────────────────────
+BUILD & TEST GATE (Xcode)
+• Replace placeholders if known:
+  Build:
+    xcodebuild -workspace <WORKSPACE>.xcworkspace -scheme <SCHEME> \
+      -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15' \
+      -configuration Debug clean build
+  (SwiftPM fallback): swift build
+
+• Tests (keep green; do not weaken):
+    xcodebuild test -workspace <WORKSPACE>.xcworkspace -scheme <SCHEME> \
+      -destination 'platform=iOS Simulator,name=iPhone 15'
+  (If Fastlane configured): bundle exec fastlane scan
+
+• Static checks (if present):
+    swiftlint --strict
+    swiftformat . --lint
+  Treat reported violations as ❌ unless justified with file:line.
+
+• Assets/LFS sanity (if repo uses them): verify referenced asset paths exist and compile.
+
+──────────────────────────────────────────────────────────────────────────────
+ARCHITECTURE & SOLID
+SOLID
+- S: Single Responsibility — no “god” ViewModels/Controllers doing networking + storage + formatting.
+- O: Open/Closed — features via composition/extension; avoid editing core types for new behavior.
+- L: Liskov — subtypes don’t weaken contracts.
+- I: Interface Segregation — small protocols; no empty stub impls.
+- D: Dependency Inversion — high-level depends on abstractions, not concrete frameworks.
+
+Clean Architecture boundaries
+- Domain: pure Swift; NO UIKit/SwiftUI/URLSession/SwiftData types.
+- Data: networking, SwiftData/DB, file I/O; depends on Domain protocols only.
+- Presentation: UIKit/SwiftUI/Combine; talks to Domain abstractions only; NO networking/persistence.
+- App/Wiring: composition root; resolves dependencies; no business logic.
+
+For any violation, refactor or justify (file:line, trade-offs).
+
+──────────────────────────────────────────────────────────────────────────────
+TESTABILITY
+- Constructor injection (or factory) for collaborators; avoid hidden singletons.
+- Side effects behind protocols (Clock, UUIDProvider, NetworkClient, Storage, Transcriber).
+- Async APIs use `async/await` (`async throws`) and are faked in tests.
+- Add/adjust tests whenever public behavior changes.
+- Snapshot tests for UI where feasible; otherwise document deltas.
+
+──────────────────────────────────────────────────────────────────────────────
+FAILURE / EXCEPTION-HANDLING
+A. Identify failure points: networking (timeouts/5xx/decoding), file I/O, SwiftData saves, audio interruptions & route changes, permission denials, cancellation, storage full, background limits, data corruption.
+B. Coding rules (❌ on violation):
+- No `try!` in production; no force-unwraps `!` on changed lines (except IBOutlets). Use `guard let`/`do-catch`.
+- No empty `catch {}`; map/log/rethrow with context. Typed `enum Error` in each module, preserving underlying error.
+- Distinguish programmer vs runtime errors (assert in DEBUG only).
+- Use `defer` for cleanup (files/streams/AV, observers).
+- UI updates on main thread (`@MainActor` / `DispatchQueue.main`).
+- Handle `Task.isCancelled` explicitly; treat cancellation as non-error.
+- Retriable ops: bounded exponential backoff with jitter (max 3) for idempotent requests only.
+- Convert `OSStatus`/`NSError` to typed errors; include human-readable message and `underlying`.
+- Unified logging via `Logger` (no secrets/PII).
+
+Automated grep guards (optional in CI):
+  git diff --name-only HEAD | xargs grep -n "try!" && echo "❌ try! found" && exit 1 || true
+  git diff --name-only HEAD | xargs grep -n "fatalError(" && echo "⚠️ fatalError found; justify or remove"
+
+──────────────────────────────────────────────────────────────────────────────
+AUDIO RECORDING SYSTEM (AVAudioEngine)
+Must satisfy:
+- Session: configure `AVAudioSession` for recording (category `.playAndRecord`, options e.g. `.allowBluetooth`, `.defaultToSpeaker` as needed); set preferred sample rate/IO buffer duration; activate/deactivate with error handling.
+- Route changes: observe `AVAudioSession.routeChangeNotification`; detect headphone/Bluetooth plug/unplug and rewire engine; persist/restore state.
+- Interruptions: observe `AVAudioSession.interruptionNotification`; pause on begin; resume if `.shouldResume`.
+- Background recording: enable *Background Modes → Audio*; keep engine/mixer running in background; ensure low CPU usage; safe teardown on termination.
+- Recording quality: configurable sample rate, bit depth/format; document defaults.
+- Real-time monitoring: optional level meter/waveform.
+- Edge cases: recording start failures, permission denied/revoked, storage limitations (preflight available space check).
+
+Verify in code and tests (simulate notifications & route changes).
+
+──────────────────────────────────────────────────────────────────────────────
+TIMED BACKEND TRANSCRIPTION (30s)
+Must satisfy:
+- Automatic Segmentation: split stream into time-based segments (default 30s; configurable). Handle drift (target 30s ±0.5s) and partial tail segment.
+- On-the-fly: upload each segment immediately after cut; UI shows rolling transcript without waiting for session end.
+- API Integration: real endpoint (e.g., Whisper). Use HTTPS, JSON/Multipart as per API; include request IDs for tracing.
+- Retry Logic: exponential backoff with jitter (max 3) on 5xx/timeouts/network loss; no retry on 4xx (except 429 with backoff).
+- Concurrent Processing: limit in-flight uploads (e.g., 2–4); dedupe by content hash + session/segment ID; preserve order in UI.
+- Secure Transmission: TLS; (optional) cert pinning if configured; redact secrets in logs.
+- Offline Queuing: persist segments to a local queue (SwiftData) when offline; auto-flush on connectivity regain; FIFO with backpressure.
+- Fallback: if a segment fails to transcribe 5 consecutive times, switch to local STT (Apple Speech / local Whisper) for subsequent segments until remote health recovers; mark provenance per segment.
+
+Testing:
+- Unit tests for: segmentation timing, backoff policy, dedupe, offline queue, fallback trigger/reset.
+- Integration tests: fake server with 200/429/500/timeouts; ensure UI continues streaming transcript.
+
+──────────────────────────────────────────────────────────────────────────────
+SWIFTData INTEGRATION (large datasets)
+Data model (example; adapt as needed):
+- `RecordingSession { id, createdAt, duration, title?, deviceInfo?, segments [Segment] }`
+- `Segment { id, session, index, startAt, endAt, audioURL, status(.queued/.uploading/.done/.failed), transcript? [Transcription]? }`
+- `Transcription { id, segment, text, confidence?, source(.remote/.local), createdAt, lang? }`
+
+Requirements:
+- Relationships: proper `@Relationship` between Session ↔ Segments ↔ Transcriptions.
+- Indexing/Queries: indexes on (sessionId, index), createdAt; fast fetch for last N segments.
+- Performance: efficient with 1000+ sessions, 10k+ segments (paging, batched fetch, predicates, projections; no N+1).
+- Background saves: off main thread; error surfaced; retry with backoff on transient store errors.
+- Migrations: provide vNext plan if schema changes.
+
+Tests:
+- CRUD tests at scale (seed 10k segments); measure fetch time; verify memory stays bounded.
+
+──────────────────────────────────────────────────────────────────────────────
+UI / UX
+Must include:
+- Recording Controls: start/stop/pause with visual feedback; disabled states while initializing/tearing down.
+- Session List: grouped by date; fast search/filter; virtualization (diffable data source / SwiftUI efficient lists).
+- Session Detail: segments with status & text; live updates as transcription arrives.
+- Real-time indicators: transcription progress, network offline/online status.
+- Performance: smooth scrolling with large datasets (no synchronous large fetch on main).
+- Accessibility: VoiceOver labels, traits, hints; Dynamic Type; color contrast.
+- Design niceties: loading states, pull-to-refresh, pagination where applicable.
+
+Tests:
+- UI logic tests for state machines (recording, uploading, failed, resumed).
+- (Optional) snapshot tests for critical screens.
+
+──────────────────────────────────────────────────────────────────────────────
+ERRORS & EDGE CASES (must handle)
+- Mic permission denied/revoked (prompt flow, disabled UI).
+- Insufficient storage (preflight check; user message; auto-cleanup strategy).
+- Network failures during transcription (retries/backoff/queue).
+- App termination during recording (graceful stop; last chunk persisted).
+- Route changes mid-recording (resume or user prompt).
+- Background limits (ensure audio mode; schedule background processing tasks if needed).
+- Transcription service errors (surface + fallback).
+- Data corruption (verify files before upload; checksums; safe deletion/quarantine).
+
+──────────────────────────────────────────────────────────────────────────────
+PERFORMANCE
+- Memory: stream to file; avoid loading large audio blobs wholly into RAM.
+- Battery: efficient buffers; avoid tight timers; coalesce uploads; prefer background-friendly APIs.
+- Storage: rolling cleanup policy (e.g., LRU or max total size / max age). User-facing “Manage Storage”.
+
+──────────────────────────────────────────────────────────────────────────────
+SECURITY & PRIVACY
+- At Rest: encrypt audio files (`FileProtectionType.complete` or equivalent) and/or custom encryption layer if required.
+- In Transit: HTTPS; (optional) cert pinning if configured; redact tokens in logs.
+- Tokens: store in Keychain; never in UserDefaults or plist.
+- Privacy usage strings (Info.plist) — **Gate fails if missing/weak (<10 chars or TODO/TBD)**:
+   • NSMicrophoneUsageDescription
+   • NSSpeechRecognitionUsageDescription (if Apple Speech used)
+   • NSLocalNetworkUsageDescription (+ NSBonjourServices if LAN discovery used)
+   • NSPhotoLibraryAddUsageDescription (only if exporting to Photos)
+- Background Modes (Info.plist): `audio` (required), optionally `processing` if using BGProcessingTask for catch-up uploads.
+- Optional shell checks (replace PLIST path):
+    PLIST="<PLIST_PATH/Info.plist>"
+    /usr/libexec/PlistBuddy -c "Print :NSMicrophoneUsageDescription" "$PLIST" >/dev/null || { echo "❌ Missing NSMicrophoneUsageDescription"; exit 1; }
+    /usr/libexec/PlistBuddy -c "Print :UIBackgroundModes" "$PLIST" | grep -q "audio" || { echo "❌ Missing Background Mode: audio"; exit 1; }
+
+──────────────────────────────────────────────────────────────────────────────
+DELIVERABLES & DOCUMENTATION
+- README: setup, run, environment vars, API config, sample creds, known caveats.
+- Architecture.md: module boundaries, DI graph, why AVAudioEngine, segmentation strategy, concurrency model.
+- AudioSystem.md: session config, route/interruption handling, background strategy.
+- DataModel.md: SwiftData schema, indexes, paging strategy, migration plan.
+- KnownIssues.md: limitations, TODOs with priorities.
+- Git: meaningful commit history showing incremental development.
+
+──────────────────────────────────────────────────────────────────────────────
+TESTING MATRIX
+- Unit: domain logic, segmentation timing, retry/backoff, queue, fallback switch.
+- Integration: audio start/stop, route/interrupt notifications, API client contract.
+- Edge-case: permission denied, storage full, network offline → online resume, cancellation.
+- Performance: dataset scale (≥10k segments) fetch time assertions.
+- UI state: recording/transcribing/failed/resumed flows.
+
+──────────────────────────────────────────────────────────────────────────────
+BONUS (nice-to-have, not required for gate unless specified)
+- Waveform/Level meters in real time.
+- Export sessions (WAV/M4A + JSON transcript).
+- Full-text search across transcriptions.
+- Custom audio processing (e.g., noise reduction).
+
+──────────────────────────────────────────────────────────────────────────────
+GATE REPORT — append this to EVERY answer (format EXACTLY)
+
+GATE REPORT
+Build: ✅/❌  (command used + 1–2 line summary)
+Tests: ✅/❌  (total/failed/skipped; note any changes)
+Static checks: ✅/❌  (lint/format issues)
+Audio System: ✅/❌  (session config; route/interrupt handling; background mode; quality; monitoring)
+Transcription (30s): ✅/❌  (segmentation timing; concurrency limit; retry/backoff; offline queue; fallback status)
+SwiftData: ✅/❌  (schema/relations; indexes; paging; background saves; scale checks)
+UI/UX: ✅/❌  (controls; lists; live updates; performance; accessibility)
+Failure Handling: ✅/❌  (force-unwrap/try! removed; error mapping; cleanup; cancellation)
+Performance: ✅/❌  (memory; battery; storage cleanup policy)
+Security/Privacy: ✅/❌  (encryption at rest; Keychain; TLS; Info.plist usage strings; background modes)
+Docs/Deliverables: ✅/❌  (README; Architecture; AudioSystem; DataModel; KnownIssues; commits)
+Notes/Risks: short bullets
+Next fixes: numbered steps
+
+Only produce code that passes the gate, or clearly mark ❌ with the shortest path to green. If commands cannot run here, provide the exact commands and simulate outcomes using the current diff and file references.

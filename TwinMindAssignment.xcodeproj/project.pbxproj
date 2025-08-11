@@ -400,6 +400,7 @@
 				DEVELOPMENT_TEAM = HEP834FG9R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "com.acme.recording.transcription.process com.acme.recording.offline.queue com.acme.recording.cleanup";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs access to the microphone to record audio for transcription.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to transcribe your audio recordings and provide accurate text output.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -431,6 +432,7 @@
 				DEVELOPMENT_TEAM = HEP834FG9R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "com.acme.recording.transcription.process com.acme.recording.offline.queue com.acme.recording.cleanup";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs access to the microphone to record audio for transcription.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to transcribe your audio recordings and provide accurate text output.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

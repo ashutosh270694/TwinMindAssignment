@@ -373,16 +373,4 @@ extension Publisher {
             .collect()
             .eraseToAnyPublisher()
     }
-    
-    /// Collects values from a publisher for a specific duration using a test scheduler
-    /// - Parameters:
-    ///   - scheduler: The test scheduler to use
-    ///   - duration: How long to collect values
-    /// - Returns: Publisher that emits an array of collected values
-    func collectWithTestScheduler(_ scheduler: TestScheduler, for duration: TimeInterval) -> AnyPublisher<[Output], Failure> {
-        return self
-            .receive(on: scheduler)
-            .collect(.byTime(scheduler, scheduler.now.advanced(by: TestSchedulerTime.Stride(duration))))
-            .eraseToAnyPublisher()
-    }
 } 

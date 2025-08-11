@@ -35,12 +35,13 @@ final class PerformanceTests: XCTestCase {
             for _ in 0..<iterations {
                 let startTime = CFAbsoluteTimeGetCurrent()
                 
-                let fileURL = segmentWriter.writeSegment(
+                let fileURL = try segmentWriter.writeSegment(
                     pcmData: pcmData,
                     sessionID: sessionID,
-                    index: Int.random(in: 1...1000),
+                    segmentIndex: Int.random(in: 1...1000),
+                    segmentDuration: 30.0,
                     sampleRate: 44100.0,
-                    channelCount: 1
+                    channels: 1
                 )
                 
                 let endTime = CFAbsoluteTimeGetCurrent()
@@ -48,9 +49,7 @@ final class PerformanceTests: XCTestCase {
                 totalDuration += duration
                 
                 // Cleanup
-                if let url = fileURL {
-                    try? FileManager.default.removeItem(at: url)
-                }
+                try? FileManager.default.removeItem(at: fileURL)
             }
             
             let averageDuration = totalDuration / Double(iterations)
@@ -89,17 +88,20 @@ final class PerformanceTests: XCTestCase {
         for i in 0..<concurrentWriters {
             group.enter()
             queue.async {
-                let fileURL = segmentWriter.writeSegment(
-                    pcmData: pcmData,
-                    sessionID: sessionID,
-                    index: i + 1,
-                    sampleRate: 44100.0,
-                    channelCount: 1
-                )
-                
-                // Cleanup
-                if let url = fileURL {
-                    try? FileManager.default.removeItem(at: url)
+                do {
+                    let fileURL = try segmentWriter.writeSegment(
+                        pcmData: pcmData,
+                        sessionID: sessionID,
+                        segmentIndex: i + 1,
+                        segmentDuration: 30.0,
+                        sampleRate: 44100.0,
+                        channels: 1
+                    )
+                    
+                    // Cleanup
+                    try? FileManager.default.removeItem(at: fileURL)
+                } catch {
+                    print("Error writing segment \(i + 1): \(error)")
                 }
                 
                 completedWriters += 1
@@ -140,20 +142,19 @@ final class PerformanceTests: XCTestCase {
         // When
         let initialMemory = getMemoryUsage()
         
-        let fileURL = segmentWriter.writeSegment(
+        let fileURL = try segmentWriter.writeSegment(
             pcmData: pcmData,
             sessionID: sessionID,
-            index: 1,
+            segmentIndex: 1,
+            segmentDuration: 30.0,
             sampleRate: 44100.0,
-            channelCount: 1
+            channels: 1
         )
         
         let peakMemory = getMemoryUsage()
         
         // Cleanup
-        if let url = fileURL {
-            try? FileManager.default.removeItem(at: url)
-        }
+        try? FileManager.default.removeItem(at: fileURL)
         
         let finalMemory = getMemoryUsage()
         
@@ -337,21 +338,20 @@ final class PerformanceTests: XCTestCase {
         for i in 0..<iterations {
             let pcmData = Data(repeating: UInt8(i % 256), count: dataSize)
             
-            let fileURL = segmentWriter.writeSegment(
+            let fileURL = try segmentWriter.writeSegment(
                 pcmData: pcmData,
                 sessionID: sessionID,
-                index: i + 1,
+                segmentIndex: i + 1,
+                segmentDuration: 30.0,
                 sampleRate: 44100.0,
-                channelCount: 1
+                channels: 1
             )
             
             // Record memory usage
             memoryUsage.append(getMemoryUsage())
             
             // Cleanup immediately
-            if let url = fileURL {
-                try? FileManager.default.removeItem(at: url)
-            }
+            try? FileManager.default.removeItem(at: fileURL)
             
             expectation.fulfill()
             

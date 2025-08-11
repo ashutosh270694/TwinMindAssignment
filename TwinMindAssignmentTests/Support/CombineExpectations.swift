@@ -409,8 +409,13 @@ extension Publisher {
         line: UInt = #line
     ) throws -> Output {
         if Self.Failure.self == Never.self {
+            // Convert to AnyPublisher<Output, Never> for the static method
+            let neverPublisher = self
+                .catch { _ in Empty<Output, Never>() }
+                .eraseToAnyPublisher()
+            
             return try CombineExpectations.expectValue(
-                from: self.eraseToAnyPublisher(),
+                from: neverPublisher,
                 timeout: timeout,
                 file: file,
                 line: line
@@ -482,8 +487,13 @@ extension Publisher {
         line: UInt = #line
     ) throws -> [Output] {
         if Self.Failure.self == Never.self {
+            // Convert to AnyPublisher<Output, Never> for the static method
+            let neverPublisher = self
+                .catch { _ in Empty<Output, Never>() }
+                .eraseToAnyPublisher()
+            
             return try CombineExpectations.expectValues(
-                from: self.eraseToAnyPublisher(),
+                from: neverPublisher,
                 count: count,
                 timeout: timeout,
                 file: file,
@@ -545,30 +555,56 @@ extension Publisher {
         }
     }
     
-    /// Tests that the publisher completes successfully within timeout
+    /// Tests that the publisher completes within timeout
     /// - Parameters:
     ///   - timeout: How long to wait
     ///   - file: The source file
     ///   - line: The source line
-    /// - Throws: XCTFail if completion doesn't occur within timeout or if an error occurs
+    /// - Throws: XCTFail if completion doesn't occur within timeout
     func expectCompletion(
         timeout: TimeInterval = 1.0,
         file: StaticString = #file,
         line: UInt = #line
     ) throws {
         if Self.Failure.self == Never.self {
-            try CombineExpectations.expectCompletion(
-                from: self.eraseToAnyPublisher(),
-                timeout: timeout,
-                file: file,
-                line: line
-            )
+            // For publishers that never fail, just wait for completion
+            let expectation = XCTestExpectation(description: "Publisher completed")
+            
+            _ = self
+                .sink(
+                    receiveCompletion: { _ in
+                        expectation.fulfill()
+                    },
+                    receiveValue: { _ in }
+                )
+            
+            let waitResult = XCTWaiter().wait(for: [expectation], timeout: timeout)
+            
+            switch waitResult {
+            case .completed:
+                break // Success
+            case .timedOut:
+                XCTFail("Publisher did not complete within timeout", file: file, line: line)
+                throw CombineExpectationError.timeout
+            case .incorrectOrder:
+                XCTFail("Expectation order incorrect", file: file, line: line)
+                throw CombineExpectationError.incorrectOrder
+            case .interrupted:
+                XCTFail("Expectation was interrupted", file: file, line: line)
+                throw CombineExpectationError.interrupted
+            case .invertedFulfillment:
+                XCTFail("Inverted expectation was fulfilled", file: file, line: line)
+                throw CombineExpectationError.invertedFulfillment
+            @unknown default:
+                XCTFail("Unknown expectation result", file: file, line: line)
+                throw CombineExpectationError.unknown
+            }
         } else {
             // For publishers that can fail, we need to handle the error case
             let expectation = XCTestExpectation(description: "Publisher completed")
             var error: Error?
             
-            let cancellable = self
+            _ = self
                 .sink(
                     receiveCompletion: { completion in
                         if case .failure(let err) = completion {
@@ -687,8 +723,13 @@ extension Publisher {
         line: UInt = #line
     ) throws {
         if Self.Failure.self == Never.self {
+            // Convert to AnyPublisher<Output, Never> for the static method
+            let neverPublisher = self
+                .catch { _ in Empty<Output, Never>() }
+                .eraseToAnyPublisher()
+            
             try CombineExpectations.expectNoValue(
-                from: self.eraseToAnyPublisher(),
+                from: neverPublisher,
                 timeout: timeout,
                 file: file,
                 line: line

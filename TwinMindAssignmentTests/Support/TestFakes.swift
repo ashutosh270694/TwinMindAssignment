@@ -169,50 +169,44 @@ final class FakeTranscriptSegmentRepository: TranscriptSegmentRepositoryProtocol
 
 final class FakeAudioRecorder: AudioRecorderProtocol {
     
-    @Published private var _isRecording = false
-    @Published private var _recordingState: RecordingState = .idle
+    @Published var isRecording = false
+    @Published var recordingState: RecordingState = .idle
     
     private let levelSubject = PassthroughSubject<Float, Never>()
     private let stateSubject = PassthroughSubject<RecordingState, Never>()
-    
-    var isRecording: Bool {
-        get { _isRecording }
-        set { _isRecording = newValue }
-    }
-    
-    var recordingState: RecordingState {
-        get { _recordingState }
-        set { _recordingState = newValue }
-    }
     
     var levelPublisher: AnyPublisher<Float, Never> {
         return levelSubject.eraseToAnyPublisher()
     }
     
     var statePublisher: AnyPublisher<RecordingState, Never> {
-        return stateSubject.eraseToAnyPublisher()
+        return $recordingState.eraseToAnyPublisher()
     }
     
     func startRecording(session: RecordingSession, segmentSink: AudioSegmentSink) async throws {
-        isRecording = true
-        recordingState = .recording
-        stateSubject.send(.recording)
+        await MainActor.run {
+            isRecording = true
+            recordingState = .recording
+        }
     }
     
     func stop() async {
-        isRecording = false
-        recordingState = .stopped
-        stateSubject.send(.stopped)
+        await MainActor.run {
+            isRecording = false
+            recordingState = .stopped
+        }
     }
     
     func pause() async {
-        recordingState = .paused
-        stateSubject.send(.paused)
+        await MainActor.run {
+            recordingState = .paused
+        }
     }
     
     func resume() async {
-        recordingState = .recording
-        stateSubject.send(.recording)
+        await MainActor.run {
+            recordingState = .recording
+        }
     }
     
     // MARK: - Test Support
@@ -558,14 +552,6 @@ final class FakeExportService: ObservableObject {
     }
 }
 
-// MARK: - Missing Types (Placeholders for Tests)
-
-enum RecordingState {
-    case idle
-    case recording
-    case paused
-}
-
 // MARK: - Convenience Initializers
 
 extension FakeRecordingSessionRepository {
@@ -606,14 +592,14 @@ extension FakeAudioRecorder {
     static func recording() -> FakeAudioRecorder {
         let recorder = FakeAudioRecorder()
         recorder.isRecording = true
-        recorder.recordingLevel = 0.5
+        recorder.recordingState = .recording
         return recorder
     }
     
     static func idle() -> FakeAudioRecorder {
         let recorder = FakeAudioRecorder()
         recorder.isRecording = false
-        recorder.recordingLevel = 0.0
+        recorder.recordingState = .idle
         return recorder
     }
 }
