@@ -1,0 +1,76 @@
+# iOS Audio Recording & Transcription Take-Home Requirements
+# Generated from original spec for audit compliance
+
+Audio_Recording_System:
+  AR1: "AVAudioEngine used"
+  AR2: "AudioSession category/mode/options correct (playAndRecord, measurement, BT, defaultToSpeaker)"
+  AR3: "Route change + interruption recovery with auto-resume"
+  AR4: "Background recording continues"
+  AR5: "Configurable quality (sample rate, bit depth/bitrate, format)"
+  AR6: "Real-time level monitoring"
+
+Timed_Backend_Transcription:
+  TX1: "Automatic segmentation (default 30s; configurable)"
+  TX2: "On-the-fly transcription per segment (UI updates live)"
+  TX3: "Real API integration (e.g., Whisper endpoint)"
+  TX4: "Retry with exponential backoff"
+  TX5: "Concurrent uploads (≥3)"
+  TX6: "HTTPS only; secure headers"
+  TX7: "Offline queue when network is down"
+  TX8: "Fallback to local STT after ≥5 consecutive failures"
+
+SwiftData_Integration:
+  SD1: "Sessions + Segments persisted"
+  SD2: "Proper relationships + cascade"
+  SD3: "Scales to 1k sessions / 10k segments (indexed fetches)"
+
+UI_UX:
+  UX1: "Record controls with visual feedback"
+  UX2: "Session list grouped by date + search/filter + pagination"
+  UX3: "Session detail shows segments, statuses, text"
+  UX4: "Real-time updates while recording/transcribing"
+  UX5: "Smooth scrolling on large datasets (virtualization/pagination)"
+  UX6: "Accessibility (VoiceOver labels) + indicators for progress & offline/online"
+
+Errors_Edge_Cases:
+  EE1: "Mic permission denied/revoked UX (Settings deep-link)"
+  EE2: "Insufficient storage handling"
+  EE3: "Network failures handling & messages"
+  EE4: "App termination during recording (recovery)"
+  EE5: "Route changes mid-recording"
+  EE6: "Background processing limits (expiration handler)"
+  EE7: "Transcription service errors mapped"
+  EE8: "Data corruption (bad segment) marked + recoverable"
+
+Performance:
+  PF1: "Memory efficient with large audio"
+  PF2: "Battery optimized during long recordings"
+  PF3: "Storage cleanup / retention"
+
+Security:
+  SC1: "Encrypt audio at rest (file protection = complete)"
+  SC2: "API token in Keychain (never logs/plaintext)"
+  SC3: "iOS privacy best practices (Mic/Speech strings, consent)"
+
+Deliverables_Docs:
+  DV1: "README with setup"
+  DV2: "Good git history"
+  DV3: "Code comments for complex audio/concurrency"
+
+Documentation:
+  DC1: "Architecture doc"
+  DC2: "Audio system design (routes/interruptions)"
+  DC3: "Data model design + perf"
+  DC4: "Known issues"
+
+Testing:
+  TS1: "Unit tests core logic + data"
+  TS2: "Integration tests audio→segment→API flow (stubbed)"
+  TS3: "Edge case tests per [EE*]"
+  TS4: "Performance test basics"
+
+Bonus:
+  BN1: "Audio visualization (waveform/levels)"
+  BN2: "Export sessions (.txt/.zip)"
+  BN3: "Full-text search"
+  BN4: "Custom audio processing (NR/enhance)" 

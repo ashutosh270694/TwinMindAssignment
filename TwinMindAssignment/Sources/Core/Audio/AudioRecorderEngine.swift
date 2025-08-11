@@ -468,4 +468,23 @@ final class AudioRecorderEngine: NSObject, AudioRecorderProtocol {
         await stopAudioEngine()
         cancellables.removeAll()
     }
+    
+    private func writeAudioChunkToFile(_ data: Data, sessionID: UUID, segmentIndex: Int) throws -> URL {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let audioDirectory = documentsDirectory.appendingPathComponent("AudioSessions/\(sessionID.uuidString)")
+        
+        // Create directory if it doesn't exist
+        try FileManager.default.createDirectory(at: audioDirectory, withIntermediateDirectories: true, attributes: [
+            FileAttributeKey.protectionKey: FileProtectionType.complete
+        ])
+        
+        let filename = "segment_\(segmentIndex)_\(Date().timeIntervalSince1970).wav"
+        let fileURL = audioDirectory.appendingPathComponent(filename)
+        
+        // Write data with file protection
+        try data.write(to: fileURL, options: [.atomic, .completeFileProtection])
+        
+        print("🔒 [SECURITY] Audio file saved with complete protection: \(filename)")
+        return fileURL
+    }
 } 

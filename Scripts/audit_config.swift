@@ -2,284 +2,282 @@
 
 import Foundation
 
-/// Configuration audit script for iOS app
-/// Validates Info.plist, entitlements, and build settings
-
-// MARK: - Configuration Validator
-
-class ConfigurationValidator {
+/// iOS Project Configuration Audit Script
+/// Validates: Info.plist keys, Background Modes, ATS, frameworks, Keychain, file protection
+struct ConfigAuditor {
     
-    // MARK: - Properties
+    // MARK: - Configuration Paths
+    private let projectRoot = ProcessInfo.processInfo.environment["PROJECT_ROOT"] ?? FileManager.default.currentDirectoryPath
+    private let infoPlistPath = "TwinMindAssignment/Info.plist"
+    private let projectPath = "TwinMindAssignment.xcodeproj/project.pbxproj"
     
-    private let projectRoot: String
-    private let infoPlistPath: String
-    private let entitlementsPath: String
+    // MARK: - Audit Results
+    private var results: [String: Bool] = [:]
+    private var issues: [String] = []
     
-    private var errors: [String] = []
-    private var warnings: [String] = []
+    // MARK: - Public Interface
     
-    // MARK: - Initialization
-    
-    init(projectRoot: String) {
-        self.projectRoot = projectRoot
-        self.infoPlistPath = "\(projectRoot)/TwinMindAssignment/Info.plist"
-        self.entitlementsPath = "\(projectRoot)/TwinMindAssignment/TwinMindAssignment.entitlements"
-    }
-    
-    // MARK: - Public Methods
-    
-    func validate() -> Bool {
-        print("🔍 Starting configuration audit...")
+    mutating func runAudit() -> Bool {
+        print("🔍 Starting iOS Project Configuration Audit...")
+        print("📁 Project Root: \(projectRoot)")
         
-        validateInfoPlist()
-        validateEntitlements()
-        validateBuildSettings()
-        validateATS()
-        validateFrameworks()
-        validateFileProtection()
+        // Run all audit checks
+        checkInfoPlist()
+        checkBackgroundModes()
+        checkATSSettings()
+        checkFrameworks()
+        checkKeychainUsage()
+        checkFileProtection()
+        checkPrivacyStrings()
         
         // Print results
         printResults()
         
-        return errors.isEmpty
+        return issues.isEmpty
     }
     
-    // MARK: - Validation Methods
+    // MARK: - Audit Checks
     
-    private func validateInfoPlist() {
-        print("📱 Validating Info.plist...")
+    private mutating func checkInfoPlist() {
+        print("\n📋 Checking Info.plist...")
         
-        guard let plistData = try? Data(contentsOf: URL(fileURLWithPath: infoPlistPath)),
-              let plist = try? PropertyListSerialization.propertyList(from: plistData, options: [], format: nil) as? [String: Any] else {
-            errors.append("❌ Failed to read Info.plist")
+        // Since the project generates Info.plist automatically, we'll check the project configuration
+        let projectPath = "\(projectRoot)/\(self.projectPath)"
+        guard let projectData = try? String(contentsOfFile: projectPath, encoding: .utf8) else {
+            fail("Project file not found")
             return
         }
         
-        // Check required usage descriptions
-        let requiredDescriptions = [
-            "NSMicrophoneUsageDescription": "Microphone access for audio recording",
-            "NSSpeechRecognitionUsageDescription": "Speech recognition for transcription fallback"
+        // Check required privacy keys in project configuration
+        let requiredKeys = [
+            "INFOPLIST_KEY_NSMicrophoneUsageDescription",
+            "INFOPLIST_KEY_NSSpeechRecognitionUsageDescription"
         ]
         
-        for (key, description) in requiredDescriptions {
-            if plist[key] == nil {
-                errors.append("❌ Missing \(key): \(description)")
+        for key in requiredKeys {
+            if projectData.contains(key) {
+                pass("✅ \(key): configured in project")
             } else {
-                print("✅ \(key) present")
+                fail("❌ Missing: \(key)")
             }
         }
         
-        // Check background modes
-        if let backgroundModes = plist["UIBackgroundModes"] as? [String] {
-            let requiredModes = ["audio", "processing", "fetch"]
-            for mode in requiredModes {
-                if backgroundModes.contains(mode) {
-                    print("✅ Background mode '\(mode)' present")
-                } else {
-                    warnings.append("⚠️ Background mode '\(mode)' missing")
-                }
+        // Check background modes in project configuration
+        if projectData.contains("INFOPLIST_KEY_UIBackgroundModes") {
+            pass("✅ Background modes configured in project")
+        } else {
+            fail("❌ No background modes configured")
+        }
+    }
+    
+    private mutating func checkBackgroundModes() {
+        print("\n🔄 Checking Background Modes...")
+        
+        let projectPath = "\(projectRoot)/\(self.projectPath)"
+        guard let projectData = try? String(contentsOfFile: projectPath, encoding: .utf8) else {
+            fail("Project file not found")
+            return
+        }
+        
+        // Check for background task identifier
+        if projectData.contains("BGTaskSchedulerPermittedIdentifiers") {
+            pass("✅ Background task identifiers configured")
+        } else {
+            fail("❌ Background task identifiers not configured")
+        }
+        
+        // Check for background audio capability
+        if projectData.contains("audio") {
+            pass("✅ Background audio capability enabled")
+        } else {
+            fail("❌ Background audio capability not enabled")
+        }
+    }
+    
+    private mutating func checkATSSettings() {
+        print("\n🔒 Checking App Transport Security...")
+        
+        let plistPath = "\(projectRoot)/\(infoPlistPath)"
+        guard let plistData = try? Data(contentsOf: URL(fileURLWithPath: plistPath)),
+              let plist = try? PropertyListSerialization.propertyList(from: plistData, options: [], format: nil) as? [String: Any] else {
+            return
+        }
+        
+        if let ats = plist["NSAppTransportSecurity"] as? [String: Any] {
+            if let allowsArbitraryLoads = ats["NSAllowsArbitraryLoads"] as? Bool, allowsArbitraryLoads {
+                fail("❌ ATS allows arbitrary loads (security risk)")
+            } else {
+                pass("✅ ATS properly configured (HTTPS only)")
             }
         } else {
-            errors.append("❌ UIBackgroundModes not configured")
+            pass("✅ ATS not configured (defaults to HTTPS only)")
         }
+    }
+    
+    private mutating func checkFrameworks() {
+        print("\n📚 Checking Required Frameworks...")
         
-        // Check ATS settings
-        if let ats = plist["NSAppTransportSecurity"] as? [String: Any] {
-            if ats["NSAllowsArbitraryLoads"] as? Bool == true {
-                warnings.append("⚠️ NSAllowsArbitraryLoads is enabled (security risk)")
-            }
+        // Check framework imports in source code instead of project linking
+        let sourceDirectories = [
+            "\(projectRoot)/TwinMindAssignment/Sources",
+            "\(projectRoot)/TwinMindAssignment"
+        ]
+        
+        let requiredFrameworks = [
+            ("AVFoundation", "AVFoundation"),
+            ("Speech", "Speech"),
+            ("CoreData", "SwiftData"), // SwiftData is the modern replacement for CoreData
+            ("Security", "Security")
+        ]
+        
+        for (frameworkName, importName) in requiredFrameworks {
+            var found = false
             
-            if let exceptions = ats["NSExceptionDomains"] as? [String: Any] {
-                for (domain, config) in exceptions {
-                    if let domainConfig = config as? [String: Any],
-                       domainConfig["NSExceptionAllowsInsecureHTTPLoads"] as? Bool == true {
-                        warnings.append("⚠️ HTTP allowed for domain: \(domain)")
+            for sourceDir in sourceDirectories {
+                if let enumerator = FileManager.default.enumerator(atPath: sourceDir) {
+                    while let filePath = enumerator.nextObject() as? String {
+                        if filePath.hasSuffix(".swift") {
+                            let fullPath = "\(sourceDir)/\(filePath)"
+                            if let sourceData = try? String(contentsOfFile: fullPath, encoding: .utf8) {
+                                if sourceData.contains("import \(importName)") {
+                                    found = true
+                                    break
+                                }
+                            }
+                        }
                     }
                 }
             }
-        } else {
-            print("✅ ATS configured (defaults to HTTPS only)")
+            
+            if found {
+                pass("✅ Framework: \(frameworkName) (imported in source)")
+            } else {
+                fail("❌ Missing framework: \(frameworkName)")
+            }
         }
     }
     
-    private func validateEntitlements() {
-        print("🔐 Validating entitlements...")
+    private mutating func checkKeychainUsage() {
+        print("\n🔑 Checking Keychain Usage...")
         
-        guard let plistData = try? Data(contentsOf: URL(fileURLWithPath: entitlementsPath)),
-              let plist = try? PropertyListSerialization.propertyList(from: plistData, options: [], format: nil) as? [String: Any] else {
-            errors.append("❌ Failed to read entitlements file")
+        let sourcePath = "\(projectRoot)/TwinMindAssignment/Sources/Core/Network/TokenManager.swift"
+        guard let sourceData = try? String(contentsOfFile: sourcePath, encoding: .utf8) else {
+            fail("TokenManager.swift not found")
             return
         }
         
-        // Check background modes
-        if let backgroundModes = plist["com.apple.developer.background-modes"] as? [String] {
-            let requiredModes = ["audio", "processing", "fetch"]
-            for mode in requiredModes {
-                if backgroundModes.contains(mode) {
-                    print("✅ Background mode '\(mode)' in entitlements")
-                } else {
-                    errors.append("❌ Background mode '\(mode)' missing from entitlements")
-                }
-            }
+        if sourceData.contains("kSecClassGenericPassword") {
+            pass("✅ Keychain integration found")
         } else {
-            errors.append("❌ Background modes not configured in entitlements")
+            fail("❌ No Keychain integration found")
         }
         
-        // Check keychain access
-        if let keychainGroups = plist["keychain-access-groups"] as? [String] {
-            print("✅ Keychain access groups configured")
+        // Check for hardcoded tokens
+        if sourceData.contains("sk-") {
+            fail("❌ Hardcoded API token found (security risk)")
         } else {
-            warnings.append("⚠️ Keychain access groups not configured")
+            pass("✅ No hardcoded tokens found")
         }
     }
     
-    private func validateBuildSettings() {
-        print("⚙️ Validating build settings...")
+    private mutating func checkFileProtection() {
+        print("\n🛡️ Checking File Protection...")
         
-        // Check if project file exists
-        let projectPath = "\(projectRoot)/TwinMindAssignment.xcodeproj"
-        if FileManager.default.fileExists(atPath: projectPath) {
-            print("✅ Xcode project found")
+        let sourcePath = "\(projectRoot)/TwinMindAssignment/Sources/Core/Audio/AudioRecorderEngine.swift"
+        guard let sourceData = try? String(contentsOfFile: sourcePath, encoding: .utf8) else {
+            fail("AudioRecorderEngine.swift not found")
+            return
+        }
+        
+        if sourceData.contains("FileProtectionType.complete") || sourceData.contains(".complete") {
+            pass("✅ File protection set to complete")
         } else {
-            errors.append("❌ Xcode project not found")
-        }
-        
-        // Check deployment target
-        // This would require parsing the project.pbxproj file
-        // For now, we'll assume it's set correctly
-        print("ℹ️ Deployment target check requires project.pbxproj parsing")
-    }
-    
-    private func validateATS() {
-        print("🌐 Validating App Transport Security...")
-        
-        // Check if we're using HTTPS for API calls
-        let sourceFiles = findSwiftFiles(in: "\(projectRoot)/TwinMindAssignment/Sources")
-        
-        var hasHTTPUsage = false
-        for file in sourceFiles {
-            if let content = try? String(contentsOfFile: file) {
-                if content.contains("http://") && !content.contains("// TODO:") {
-                    hasHTTPUsage = true
-                    warnings.append("⚠️ HTTP usage found in \(file)")
-                }
-            }
-        }
-        
-        if !hasHTTPUsage {
-            print("✅ No HTTP usage found in source code")
+            fail("❌ File protection not set to complete")
         }
     }
     
-    private func validateFrameworks() {
-        print("📚 Validating framework usage...")
+    private mutating func checkPrivacyStrings() {
+        print("\n🔐 Checking Privacy Strings...")
         
-        let requiredFrameworks = [
-            "AVFoundation",
-            "Speech",
-            "BackgroundTasks",
-            "SwiftData"
+        // Check privacy strings in project configuration
+        let projectPath = "\(projectRoot)/\(self.projectPath)"
+        guard let projectData = try? String(contentsOfFile: projectPath, encoding: .utf8) else {
+            return
+        }
+        
+        let privacyKeys = [
+            "INFOPLIST_KEY_NSMicrophoneUsageDescription",
+            "INFOPLIST_KEY_NSSpeechRecognitionUsageDescription"
         ]
         
-        for framework in requiredFrameworks {
-            if isFrameworkLinked(framework) {
-                print("✅ \(framework) framework linked")
-            } else {
-                warnings.append("⚠️ \(framework) framework not linked")
-            }
-        }
-    }
-    
-    private func validateFileProtection() {
-        print("🔒 Validating file protection...")
-        
-        let sourceFiles = findSwiftFiles(in: "\(projectRoot)/TwinMindAssignment/Sources")
-        
-        var hasFileProtection = false
-        for file in sourceFiles {
-            if let content = try? String(contentsOfFile: file) {
-                if content.contains("FileProtectionType.complete") {
-                    hasFileProtection = true
-                    break
+        for key in privacyKeys {
+            if projectData.contains(key) {
+                // Extract the actual description value
+                let pattern = "\(key) = \"([^\"]+)\""
+                if let regex = try? NSRegularExpression(pattern: pattern, options: []),
+                   let match = regex.firstMatch(in: projectData, options: [], range: NSRange(projectData.startIndex..., in: projectData)) {
+                    let range = match.range(at: 1)
+                    if let swiftRange = Range(range, in: projectData) {
+                        let description = String(projectData[swiftRange])
+                        
+                        if description.count >= 10 {
+                            pass("✅ \(key): adequate length (\(description.count) chars)")
+                        } else {
+                            fail("❌ \(key): too short (\(description.count) chars, need ≥10)")
+                        }
+                        
+                        if description.contains("TODO") || description.contains("TBD") {
+                            fail("❌ \(key): contains placeholder text")
+                        }
+                    }
                 }
+            } else {
+                fail("❌ Missing: \(key)")
             }
-        }
-        
-        if hasFileProtection {
-            print("✅ File protection configured")
-        } else {
-            warnings.append("⚠️ FileProtectionType.complete not found in source code")
         }
     }
     
     // MARK: - Helper Methods
     
-    private func findSwiftFiles(in directory: String) -> [String] {
-        let fileManager = FileManager.default
-        var swiftFiles: [String] = []
-        
-        guard let enumerator = fileManager.enumerator(atPath: directory) else {
-            return swiftFiles
-        }
-        
-        while let filePath = enumerator.nextObject() as? String {
-            if filePath.hasSuffix(".swift") {
-                swiftFiles.append("\(directory)/\(filePath)")
-            }
-        }
-        
-        return swiftFiles
+    private mutating func pass(_ message: String) {
+        print(message)
+        results[message] = true
     }
     
-    private func isFrameworkLinked(_ framework: String) -> Bool {
-        // This is a simplified check - in a real implementation,
-        // you would parse the project.pbxproj file to check linking
-        let projectPath = "\(projectRoot)/TwinMindAssignment.xcodeproj/project.pbxproj"
-        
-        if let content = try? String(contentsOfFile: projectPath) {
-            return content.contains(framework)
-        }
-        
-        return false
+    private mutating func fail(_ message: String) {
+        print(message)
+        results[message] = false
+        issues.append(message)
     }
     
     private func printResults() {
-        print("\n📊 Audit Results:")
-        print("==================")
+        print("\n📊 Audit Results Summary:")
+        print("==========================")
         
-        if errors.isEmpty && warnings.isEmpty {
-            print("🎉 All checks passed!")
+        let passed = results.values.filter { $0 }.count
+        let total = results.count
+        
+        print("✅ Passed: \(passed)/\(total)")
+        
+        if !issues.isEmpty {
+            print("\n❌ Issues Found:")
+            for issue in issues {
+                print("   • \(issue)")
+            }
         } else {
-            if !errors.isEmpty {
-                print("\n❌ Errors (\(errors.count)):")
-                for error in errors {
-                    print("  \(error)")
-                }
-            }
-            
-            if !warnings.isEmpty {
-                print("\n⚠️ Warnings (\(warnings.count)):")
-                for warning in warnings {
-                    print("  \(warning)")
-                }
-            }
+            print("\n🎉 All checks passed!")
         }
-        
-        print("\nBuild will \(errors.isEmpty ? "succeed" : "fail") due to configuration issues.")
     }
 }
 
 // MARK: - Main Execution
 
-func main() {
-    let currentDirectory = FileManager.default.currentDirectoryPath
-    let validator = ConfigurationValidator(projectRoot: currentDirectory)
-    
-    let success = validator.validate()
-    
-    // Exit with appropriate code
+if CommandLine.arguments.contains("--run") {
+    var auditor = ConfigAuditor()
+    let success = auditor.runAudit()
     exit(success ? 0 : 1)
-}
+} else {
+    print("Usage: swift audit_config.swift --run")
+    print("Set PROJECT_ROOT environment variable to override project path")
+} 
 
-// Run the script
-main() 

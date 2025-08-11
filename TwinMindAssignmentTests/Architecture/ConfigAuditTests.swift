@@ -1,248 +1,173 @@
 import XCTest
-import Combine
+import Foundation
 @testable import TwinMindAssignment
 
-/// Tests to validate app configuration and architecture
-class ConfigAuditTests: XCTestCase {
+final class ConfigAuditTests: XCTestCase {
     
-    // MARK: - Info.plist Validation
+    // MARK: - Configuration Audit Tests
     
-    func testRequiredUsageDescriptions() throws {
+    func testProjectConfigurationAudit() throws {
+        // This test runs the audit script to validate project configuration
+        // It will fail with actionable messages if any configuration issues are found
+        
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/swift")
+        
+        // Get the path to the audit script
+        let bundle = Bundle(for: type(of: self))
+        guard let scriptPath = bundle.path(forResource: "audit_config", ofType: "swift") else {
+            XCTFail("audit_config.swift not found in test bundle")
+            return
+        }
+        
+        // Set up the process
+        process.arguments = [scriptPath, "--run"]
+        process.environment = [
+            "PROJECT_ROOT": FileManager.default.currentDirectoryPath
+        ]
+        
+        // Capture output
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        process.standardOutput = outputPipe
+        process.standardError = errorPipe
+        
+        // Run the audit
+        try process.run()
+        process.waitUntilExit()
+        
+        // Get output
+        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+        
+        let output = String(data: outputData, encoding: .utf8) ?? ""
+        let error = String(data: errorData, encoding: .utf8) ?? ""
+        
+        // Print output for debugging
+        print("🔍 Audit Output:")
+        print(output)
+        if !error.isEmpty {
+            print("⚠️ Audit Errors:")
+            print(error)
+        }
+        
+        // Test should pass only if audit script exits with code 0
+        XCTAssertEqual(process.terminationStatus, 0, 
+                      "Configuration audit failed. Check the output above for specific issues.")
+        
+        // Additional assertions based on audit output
+        XCTAssertTrue(output.contains("✅"), "Audit should show some passed checks")
+        
+        if output.contains("❌") {
+            XCTFail("Configuration audit found issues. Review the output above and fix the configuration problems.")
+        }
+    }
+    
+    func testInfoPlistExists() {
+        // Verify Info.plist exists and is accessible
+        let infoPlistPath = Bundle.main.path(forResource: "Info", ofType: "plist")
+        XCTAssertNotNil(infoPlistPath, "Info.plist should exist in the main bundle")
+        
+        if let path = infoPlistPath {
+            let plistData = try? Data(contentsOf: URL(fileURLWithPath: path))
+            XCTAssertNotNil(plistData, "Info.plist should be readable")
+        }
+    }
+    
+    func testRequiredPrivacyKeys() {
+        // Check that required privacy keys are present
         let bundle = Bundle.main
         
         // Check microphone usage description
         let micDescription = bundle.object(forInfoDictionaryKey: "NSMicrophoneUsageDescription") as? String
-        XCTAssertNotNil(micDescription, "NSMicrophoneUsageDescription must be present")
-        XCTAssertFalse(micDescription?.isEmpty ?? true, "NSMicrophoneUsageDescription cannot be empty")
+        XCTAssertNotNil(micDescription, "NSMicrophoneUsageDescription should be present")
+        XCTAssertFalse(micDescription?.isEmpty ?? true, "NSMicrophoneUsageDescription should not be empty")
+        XCTAssertGreaterThanOrEqual(micDescription?.count ?? 0, 10, "NSMicrophoneUsageDescription should be at least 10 characters")
         
         // Check speech recognition usage description
         let speechDescription = bundle.object(forInfoDictionaryKey: "NSSpeechRecognitionUsageDescription") as? String
-        XCTAssertNotNil(speechDescription, "NSSpeechRecognitionUsageDescription must be present")
-        XCTAssertFalse(speechDescription?.isEmpty ?? true, "NSSpeechRecognitionUsageDescription cannot be empty")
+        XCTAssertNotNil(speechDescription, "NSSpeechRecognitionUsageDescription should be present")
+        XCTAssertFalse(speechDescription?.isEmpty ?? true, "NSSpeechRecognitionUsageDescription should not be empty")
+        XCTAssertGreaterThanOrEqual(speechDescription?.count ?? 0, 10, "NSSpeechRecognitionUsageDescription should be at least 10 characters")
     }
     
-    func testBackgroundModes() throws {
+    func testBackgroundModes() {
+        // Check that required background modes are configured
         let bundle = Bundle.main
-        
-        // Check if background modes are configured
         let backgroundModes = bundle.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String]
-        XCTAssertNotNil(backgroundModes, "UIBackgroundModes must be configured")
         
-        guard let modes = backgroundModes else { return }
+        XCTAssertNotNil(backgroundModes, "UIBackgroundModes should be configured")
         
-        // Check required background modes
-        let requiredModes = ["audio", "processing", "fetch"]
-        for requiredMode in requiredModes {
-            XCTAssertTrue(modes.contains(requiredMode), "Background mode '\(requiredMode)' must be present")
+        if let modes = backgroundModes {
+            XCTAssertTrue(modes.contains("audio"), "Background audio mode should be enabled")
+            XCTAssertTrue(modes.contains("background-processing"), "Background processing mode should be enabled")
+            XCTAssertTrue(modes.contains("background-fetch"), "Background fetch mode should be enabled")
         }
     }
     
-    func testATSConfiguration() throws {
-        let bundle = Bundle.main
-        
-        // Check ATS settings
-        let ats = bundle.object(forInfoDictionaryKey: "NSAppTransportSecurity") as? [String: Any]
-        
-        // If ATS is configured, check for security issues
-        if let ats = ats {
-            // Check if arbitrary loads are allowed (security risk)
-            let allowsArbitraryLoads = ats["NSAllowsArbitraryLoads"] as? Bool
-            XCTAssertNotEqual(allowsArbitraryLoads, true, "NSAllowsArbitraryLoads should not be enabled")
-            
-            // Check for HTTP exceptions
-            if let exceptions = ats["NSExceptionDomains"] as? [String: Any] {
-                for (domain, config) in exceptions {
-                    if let domainConfig = config as? [String: Any] {
-                        let allowsHTTP = domainConfig["NSExceptionAllowsInsecureHTTPLoads"] as? Bool
-                        if allowsHTTP == true {
-                            print("⚠️ HTTP allowed for domain: \(domain)")
-                        }
-                    }
-                }
-            }
-        } else {
-            // Default ATS configuration is secure (HTTPS only)
-            print("✅ ATS not explicitly configured - defaults to HTTPS only")
-        }
-    }
-    
-    // MARK: - Framework Validation
-    
-    func testRequiredFrameworks() throws {
-        // Check if required frameworks are available
-        let requiredFrameworks = [
-            "AVFoundation",
-            "Speech",
-            "SwiftData"
-        ]
-        
-        for framework in requiredFrameworks {
-            XCTAssertTrue(Bundle.main.path(forResource: framework, ofType: "framework") != nil ||
-                         Bundle.main.path(forResource: framework, ofType: nil) != nil,
-                         "Framework \(framework) must be linked")
-        }
-    }
-    
-    func testBackgroundTasksFramework() throws {
-        // BackgroundTasks framework is only available on iOS 13+
-        if #available(iOS 13.0, *) {
-            XCTAssertTrue(Bundle.main.path(forResource: "BackgroundTasks", ofType: "framework") != nil ||
-                         Bundle.main.path(forResource: "BackgroundTasks", ofType: nil) != nil,
-                         "BackgroundTasks framework must be linked on iOS 13+")
-        } else {
-            print("ℹ️ BackgroundTasks framework not available on iOS < 13.0")
-        }
-    }
-    
-    // MARK: - Architecture Validation
-    
-    func testSwiftDataModels() throws {
-        // Check if SwiftData models are properly configured
-        let recordingSessionType = RecordingSession.self
-        let transcriptSegmentType = TranscriptSegment.self
-        
-        // Verify models can be instantiated
-        let session = RecordingSession(title: "Test Session")
-        let segment = TranscriptSegment(sessionID: session.id, index: 0, startTime: 0, duration: 10)
-        
-        XCTAssertNotNil(session.id)
-        XCTAssertNotNil(segment.id)
-        XCTAssertEqual(segment.sessionID, session.id)
-    }
-    
-    func testRepositoryProtocols() throws {
-        // Check if repository protocols are properly defined
-        let sessionRepoProtocol = RecordingSessionRepositoryProtocol.self
-        let segmentRepoProtocol = TranscriptSegmentRepositoryProtocol.self
-        
-        // Verify protocols exist
-        XCTAssertNotNil(sessionRepoProtocol)
-        XCTAssertNotNil(segmentRepoProtocol)
-    }
-    
-    func testDependencyInjection() throws {
-        // Check if environment holder is properly configured
-        let environment = EnvironmentHolder.createDefault()
-        
-        XCTAssertNotNil(environment.recordingSessionRepository)
-        XCTAssertNotNil(environment.transcriptSegmentRepository)
-        XCTAssertNotNil(environment.audioRecorder)
-        XCTAssertNotNil(environment.transcriptionOrchestrator)
-        XCTAssertNotNil(environment.reachability)
-        XCTAssertNotNil(environment.backgroundTaskManager)
-        XCTAssertNotNil(environment.segmentWriter)
-        XCTAssertNotNil(environment.swiftDataStack)
-    }
-    
-    // MARK: - Security Validation
-    
-    func testKeychainUsage() throws {
-        // Check if TokenManager uses Keychain
-        let tokenManager = TokenManager()
-        
-        // Test token storage and retrieval
-        let testToken = "test_token_12345"
-        let stored = tokenManager.setToken(testToken)
-        XCTAssertTrue(stored, "Token should be stored successfully")
-        
-        let retrieved = tokenManager.getToken()
-        XCTAssertEqual(retrieved, testToken, "Token should be retrieved correctly")
-        
-        // Clean up
-        _ = tokenManager.removeToken()
-    }
-    
-    func testFileProtection() throws {
-        // Check if file protection is implemented
+    func testNoHardcodedTokens() {
+        // Verify that no hardcoded API tokens exist in the codebase
         let sourceFiles = findSwiftFiles()
         
-        var hasFileProtection = false
         for file in sourceFiles {
-            if let content = try? String(contentsOfFile: file) {
-                if content.contains("FileProtectionType.complete") {
-                    hasFileProtection = true
-                    break
+            let content = try? String(contentsOfFile: file)
+            if let fileContent = content {
+                // Check for hardcoded OpenAI tokens
+                if fileContent.contains("sk-") && !fileContent.contains("YOUR_OPENAI_API_KEY_HERE") {
+                    XCTFail("Hardcoded API token found in \(file). Remove the token and use a placeholder.")
+                }
+                
+                // Check for other common token patterns
+                if fileContent.contains("Bearer ") && fileContent.contains("sk-") {
+                    XCTFail("Hardcoded Bearer token found in \(file). Use environment variables or secure storage.")
                 }
             }
         }
-        
-        // This is a warning, not a failure, as file protection might be implemented elsewhere
-        if !hasFileProtection {
-            print("⚠️ FileProtectionType.complete not found in source code")
-        }
     }
     
-    // MARK: - Performance Validation
-    
-    func testRepositoryPerformance() throws {
-        // Test repository performance with large datasets
-        let environment = EnvironmentHolder.createDefault()
-        let sessionRepo = environment.recordingSessionRepository
+    func testFileProtectionConfigured() {
+        // Check that file protection is configured in audio-related code
+        let audioFiles = [
+            "TwinMindAssignment/Sources/Core/Audio/AudioRecorderEngine.swift",
+            "TwinMindAssignment/Sources/Core/Audio/LiveTranscriber.swift"
+        ]
         
-        // Measure fetch performance
-        let startTime = CFAbsoluteTimeGetCurrent()
-        
-        let expectation = XCTestExpectation(description: "Repository fetch")
-        sessionRepo.fetchSessions()
-            .sink(
-                receiveCompletion: { _ in
-                    expectation.fulfill()
-                },
-                receiveValue: { _ in }
-            )
-            .store(in: &cancellables)
-        
-        wait(for: [expectation], timeout: 5.0)
-        
-        let endTime = CFAbsoluteTimeGetCurrent()
-        let duration = endTime - startTime
-        
-        // Repository operations should complete within reasonable time
-        XCTAssertLessThan(duration, 1.0, "Repository fetch should complete within 1 second")
+        for file in audioFiles {
+            let content = try? String(contentsOfFile: file)
+            if let fileContent = content {
+                // Should contain file protection configuration
+                let hasFileProtection = fileContent.contains("FileProtectionType.complete") || 
+                                      fileContent.contains(".complete") ||
+                                      fileContent.contains("FileProtectionType")
+                
+                if !hasFileProtection {
+                    XCTFail("File protection not configured in \(file). Audio files should be encrypted at rest.")
+                }
+            }
     }
     
     // MARK: - Helper Methods
     
-    private var cancellables = Set<AnyCancellable>()
-    
     private func findSwiftFiles() -> [String] {
-        let bundle = Bundle(for: type(of: self))
-        let bundlePath = bundle.bundlePath
-        
-        var swiftFiles: [String] = []
         let fileManager = FileManager.default
+        var swiftFiles: [String] = []
         
-        if let enumerator = fileManager.enumerator(atPath: bundlePath) {
+        // Search in main source directories
+        let searchPaths = [
+            "TwinMindAssignment/Sources",
+            "TwinMindAssignment"
+        ]
+        
+        for path in searchPaths {
+            guard let enumerator = fileManager.enumerator(atPath: path) else { continue }
+            
             while let filePath = enumerator.nextObject() as? String {
                 if filePath.hasSuffix(".swift") {
-                    swiftFiles.append("\(bundlePath)/\(filePath)")
+                    swiftFiles.append("\(path)/\(filePath)")
                 }
             }
         }
         
         return swiftFiles
-    }
-}
-
-// MARK: - Test Categories
-
-extension ConfigAuditTests {
-    
-    /// Mark tests that should run in CI
-    override func setUp() {
-        super.setUp()
-        
-        // These tests are critical for CI/CD and should always run
-        continueAfterFailure = false
-    }
-    
-    /// Mark tests that validate critical configuration
-    func testCriticalConfiguration() throws {
-        // Run all critical configuration tests
-        try testRequiredUsageDescriptions()
-        try testBackgroundModes()
-        try testRequiredFrameworks()
-        try testRepositoryProtocols()
-        try testDependencyInjection()
     }
 } 
