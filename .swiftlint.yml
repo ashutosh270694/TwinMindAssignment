@@ -1,0 +1,60 @@
+# SwiftLint Configuration for TwinMindAssignment
+
+# Custom Rules
+custom_rules:
+  # Ban DispatchQueue.main.asyncAfter in source files
+  no_dispatch_main_async_after:
+    name: "No DispatchQueue.main.asyncAfter"
+    regex: 'DispatchQueue\.main\.asyncAfter'
+    message: "Use environment.scheduler instead of DispatchQueue.main.asyncAfter"
+    severity: error
+    included: "Sources/**/*.swift"
+    excluded: "Tests/**/*.swift"
+
+# Disable some rules for test files
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+  - function_body_length
+  - type_body_length
+  - file_length
+
+# Enable rules for source files
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - overridden_super_call
+  - redundant_nil_coalescing
+  - unneeded_parentheses_in_closure_argument
+
+# Exclude test files from strict rules
+excluded:
+  - Tests
+  - TwinMindAssignmentTests
+  - TwinMindAssignmentUITests
+  - Pods
+  - Carthage
+  - .build
+
+# Line length for source files
+line_length:
+  warning: 120
+  error: 150
+  ignores_comments: true
+  ignores_urls: true
+
+# Function body length
+function_body_length:
+  warning: 50
+  error: 100
+
+# Type body length
+type_body_length:
+  warning: 300
+  error: 500
+
+# File length
+file_length:
+  warning: 400
+  error: 800 
