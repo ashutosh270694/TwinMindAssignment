@@ -1,0 +1,188 @@
+{
+  "" : {
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests-master.dia",
+    "emit-module-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests-master-emit-module.dia",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests-master.swiftdeps"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Architecture/ConfigAuditTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ConfigAuditTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ConfigAuditTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ConfigAuditTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ConfigAuditTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ConfigAuditTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ConfigAuditTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ConfigAuditTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ConfigAuditTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Audio/AudioSystemTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSystemTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSystemTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSystemTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSystemTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSystemTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSystemTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSystemTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSystemTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/CoreDataTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CoreDataTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CoreDataTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CoreDataTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CoreDataTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CoreDataTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CoreDataTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CoreDataTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CoreDataTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Data/SwiftDataModelTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/SwiftDataModelTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/SwiftDataModelTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/SwiftDataModelTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/SwiftDataModelTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/SwiftDataModelTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/SwiftDataModelTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/SwiftDataModelTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/SwiftDataModelTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/ErrorHandling/ErrorPathsTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ErrorPathsTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ErrorPathsTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ErrorPathsTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ErrorPathsTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ErrorPathsTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ErrorPathsTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ErrorPathsTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/ErrorPathsTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Integration/AudioSegmentationTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSegmentationTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSegmentationTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSegmentationTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSegmentationTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSegmentationTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSegmentationTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSegmentationTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/AudioSegmentationTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Perf/PerfBudgetsTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerfBudgetsTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerfBudgetsTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerfBudgetsTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerfBudgetsTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerfBudgetsTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerfBudgetsTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerfBudgetsTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerfBudgetsTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Performance/PerformanceTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerformanceTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerformanceTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerformanceTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerformanceTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerformanceTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerformanceTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerformanceTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/PerformanceTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Support/CombineExpectations.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CombineExpectations.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CombineExpectations.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CombineExpectations.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CombineExpectations.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CombineExpectations.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CombineExpectations.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CombineExpectations.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/CombineExpectations~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Support/TestFakes.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestFakes.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestFakes.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestFakes.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestFakes.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestFakes.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestFakes.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestFakes.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestFakes~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Support/TestScheduler.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestScheduler.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestScheduler.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestScheduler.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestScheduler.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestScheduler.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestScheduler.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestScheduler.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TestScheduler~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Transcription/TranscriptionPipelineTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TranscriptionPipelineTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TranscriptionPipelineTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TranscriptionPipelineTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TranscriptionPipelineTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TranscriptionPipelineTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TranscriptionPipelineTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TranscriptionPipelineTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TranscriptionPipelineTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/TwinMindAssignmentTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/TwinMindAssignmentTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/UI/DeviceSmokeTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/DeviceSmokeTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/DeviceSmokeTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/DeviceSmokeTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/DeviceSmokeTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/DeviceSmokeTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/DeviceSmokeTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/DeviceSmokeTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/DeviceSmokeTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/UI/UXUITests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/UXUITests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/UXUITests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/UXUITests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/UXUITests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/UXUITests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/UXUITests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/UXUITests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/UXUITests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Unit/APIRetryTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/APIRetryTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/APIRetryTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/APIRetryTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/APIRetryTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/APIRetryTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/APIRetryTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/APIRetryTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/APIRetryTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Unit/OrchestratorTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/OrchestratorTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/OrchestratorTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/OrchestratorTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/OrchestratorTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/OrchestratorTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/OrchestratorTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/OrchestratorTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/OrchestratorTests~partial.swiftmodule"
+  },
+  "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignmentTests/Unit/RepositoryTests.swift" : {
+    "const-values" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/RepositoryTests.swiftconstvalues",
+    "dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/RepositoryTests.d",
+    "diagnostics" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/RepositoryTests.dia",
+    "index-unit-output-path" : "/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/RepositoryTests.o",
+    "llvm-bc" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/RepositoryTests.bc",
+    "object" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/RepositoryTests.o",
+    "swift-dependencies" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/RepositoryTests.swiftdeps",
+    "swiftmodule" : "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignmentTests.build/Objects-normal/arm64/RepositoryTests~partial.swiftmodule"
+  }
+}

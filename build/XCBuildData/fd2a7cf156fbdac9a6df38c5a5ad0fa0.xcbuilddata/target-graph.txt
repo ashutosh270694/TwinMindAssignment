@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'TwinMindAssignmentTests' in project 'TwinMindAssignment'
+➜ Explicit dependency on target 'TwinMindAssignment' in project 'TwinMindAssignment'
+Target 'TwinMindAssignment' in project 'TwinMindAssignment' (no dependencies)

@@ -1,5 +1,9 @@
 # TwinMindAssignment - iOS Audio Recording & Transcription App
 
+> **⚠️ PROPRIETARY SOFTWARE**  
+> This software is proprietary and confidential. All rights reserved.  
+> See [LICENSE](../LICENSE) for terms and restrictions.
+
 ## 📱 Project Overview
 
 **TwinMindAssignment** is a comprehensive iOS application built with modern Swift technologies for recording, segmenting, and transcribing audio content. The app demonstrates Clean Architecture principles, SOLID design patterns, and robust testing strategies.

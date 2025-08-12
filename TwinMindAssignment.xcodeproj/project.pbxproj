@@ -1,4 +1,14 @@
 // !$*UTF8*$!
+//
+//  project.pbxproj
+//  TwinMindAssignment
+//
+//  PROPRIETARY SOFTWARE - Copyright (c) 2025 Ashutosh. All rights reserved.
+//  This software is confidential and proprietary. Unauthorized copying,
+//  distribution, or use is strictly prohibited.
+//
+//  This file contains the project configuration for TwinMindAssignment.
+//  All rights reserved.
 {
 	archiveVersion = 1;
 	classes = {
