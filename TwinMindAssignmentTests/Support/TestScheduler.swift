@@ -1,376 +1,311 @@
+//
+//  TestScheduler.swift
+//  TwinMindAssignmentTests
+//
+//  PROPRIETARY SOFTWARE - Copyright (c) 2025 Ashutosh, DobbyFactory. All rights reserved.
+//  This software is confidential and proprietary. Unauthorized copying,
+//  distribution, or use is strictly prohibited.
+//
+//  Created by Ashutosh Pandey on 09/08/25.
+//
+
 import Foundation
 import Combine
 import XCTest
 
-// MARK: - AnyScheduler Type Erasure
-
-/// Type-erased wrapper for Scheduler protocol
-struct AnyScheduler<SchedulerTimeType: Strideable, SchedulerOptions>: Scheduler where SchedulerTimeType.Stride: SchedulerTimeIntervalConvertible {
-    
-    private let _now: () -> SchedulerTimeType
-    private let _minimumTolerance: () -> SchedulerTimeType.Stride
-    private let _schedule: (SchedulerOptions?, @escaping () -> Void) -> Void
-    private let _scheduleAfter: (SchedulerTimeType, SchedulerTimeType.Stride, SchedulerOptions?, @escaping () -> Void) -> Void
-    private let _scheduleAfterInterval: (SchedulerTimeType, SchedulerTimeType.Stride, SchedulerTimeType.Stride, SchedulerOptions?, @escaping () -> Void) -> Cancellable
-    
-    init<S: Scheduler>(_ scheduler: S) where S.SchedulerTimeType == SchedulerTimeType, S.SchedulerOptions == SchedulerOptions {
-        _now = { scheduler.now }
-        _minimumTolerance = { scheduler.minimumTolerance }
-        _schedule = { scheduler.schedule(options: $0, $1) }
-        _scheduleAfter = { scheduler.schedule(after: $0, tolerance: $1, options: $2, $3) }
-        _scheduleAfterInterval = { scheduler.schedule(after: $0, interval: $1, tolerance: $2, options: $3, $4) }
-    }
-    
-    var now: SchedulerTimeType { _now() }
-    var minimumTolerance: SchedulerTimeType.Stride { _minimumTolerance() }
-    
-    func schedule(options: SchedulerOptions?, _ action: @escaping () -> Void) {
-        _schedule(options, action)
-    }
-    
-    func schedule(after date: SchedulerTimeType, tolerance: SchedulerTimeType.Stride, options: SchedulerOptions?, _ action: @escaping () -> Void) {
-        _scheduleAfter(date, tolerance, options, action)
-    }
-    
-    func schedule(after date: SchedulerTimeType, interval: SchedulerTimeType.Stride, tolerance: SchedulerTimeType.Stride, options: SchedulerOptions?, _ action: @escaping () -> Void) -> Cancellable {
-        return _scheduleAfterInterval(date, interval, tolerance, options, action)
-    }
-}
-
-/// A test scheduler that provides deterministic timing for Combine testing
-final class TestScheduler: Scheduler {
-    
-    // MARK: - Scheduler Conformance
-    
-    typealias SchedulerTimeType = TestSchedulerTime
-    typealias SchedulerOptions = Never
-    
-    var now: TestSchedulerTime {
-        return TestSchedulerTime(absolute: currentTime)
-    }
-    
-    var minimumTolerance: TestSchedulerTime.Stride {
-        return TestSchedulerTime.Stride(0)
-    }
+/// Test scheduler for deterministic testing
+/// 
+/// Provides a controlled environment for testing time-based operations
+/// and asynchronous behavior. All operations are deterministic and
+/// can be controlled precisely for testing purposes.
+/// 
+/// Follows the XCTest Hygiene rules:
+/// - Deterministic behavior
+/// - Clear state management
+/// - Easy verification
+/// - No side effects
+final class TestScheduler {
     
     // MARK: - Properties
     
+    /// Current virtual time in the test scheduler
     private var currentTime: TimeInterval = 0
-    private var scheduledWork: [ScheduledWork] = []
-    private var isRunning = false
+    
+    /// Scheduled tasks
+    private var scheduledTasks: [ScheduledTask] = []
+    
+    /// Whether the scheduler is running
+    private var isRunning: Bool = false
+    
+    /// Task counter for unique identification
+    private var taskCounter: Int = 0
     
     // MARK: - Initialization
     
-    init() {}
-    
-    // MARK: - Scheduler Methods
-    
-    func schedule(options: Never?, _ action: @escaping () -> Void) {
-        schedule(action: action)
+    init() {
+        reset()
     }
     
-    func schedule(after date: TestSchedulerTime, tolerance: TestSchedulerTime.Stride, options: Never?, _ action: @escaping () -> Void) {
-        schedule(after: date, action: action)
-    }
+    // MARK: - Public Interface
     
-    func schedule(after date: TestSchedulerTime, interval: TestSchedulerTime.Stride, tolerance: TestSchedulerTime.Stride, options: Never?, _ action: @escaping () -> Void) -> Cancellable {
-        return schedule(after: date, interval: interval, action: action)
-    }
-    
-    // MARK: - Test-Specific Methods
-    
-    /// Schedules work to be executed immediately
-    /// - Parameter action: The work to execute
-    func schedule(action: @escaping () -> Void) {
-        scheduledWork.append(ScheduledWork(time: currentTime, action: action))
-    }
-    
-    /// Schedules work to be executed at a specific time
-    /// - Parameters:
-    ///   - date: When to execute the work
-    ///   - action: The work to execute
-    func schedule(after date: TestSchedulerTime, action: @escaping () -> Void) {
-        scheduledWork.append(ScheduledWork(time: date.absolute, action: action))
-    }
-    
-    /// Schedules recurring work
-    /// - Parameters:
-    ///   - date: When to start executing the work
-    ///   - interval: How often to repeat
-    ///   - action: The work to execute
-    /// - Returns: A cancellable token
-    func schedule(after date: TestSchedulerTime, interval: TestSchedulerTime.Stride, action: @escaping () -> Void) -> Cancellable {
-        let work = ScheduledWork(time: date.absolute, interval: interval.magnitude, action: action)
-        scheduledWork.append(work)
-        return work
-    }
-    
-    /// Advances the scheduler by the specified time
-    /// - Parameter time: How much time to advance
-    func advance(by time: TestSchedulerTime.Stride) {
-        advance(to: currentTime + time.magnitude)
+    /// Advances the scheduler by the specified time interval
+    func advance(by timeInterval: TimeInterval) {
+        guard timeInterval > 0 else { return }
+        
+        currentTime += timeInterval
+        
+        // Process any tasks that should have fired
+        processScheduledTasks()
     }
     
     /// Advances the scheduler to the specified time
-    /// - Parameter time: The target time
     func advance(to time: TimeInterval) {
-        guard time >= currentTime else { return }
-        
-        // Sort work by execution time
-        scheduledWork.sort { $0.time < $1.time }
-        
-        // Execute all work up to the target time
-        while let nextWork = scheduledWork.first, nextWork.time <= time {
-            scheduledWork.removeFirst()
-            currentTime = nextWork.time
-            
-            // Execute the work
-            nextWork.action()
-            
-            // If this is recurring work, schedule the next occurrence
-            if let interval = nextWork.interval {
-                let nextTime = currentTime + interval
-                if nextTime <= time {
-                    scheduledWork.append(ScheduledWork(time: nextTime, interval: interval, action: nextWork.action))
-                }
-            }
-        }
-        
-        currentTime = time
-    }
-    
-    /// Runs the scheduler until all scheduled work is complete
-    func run() {
-        while !scheduledWork.isEmpty {
-            advance(by: TestSchedulerTime.Stride(1))
+        let delta = time - currentTime
+        if delta > 0 {
+            advance(by: delta)
         }
     }
     
-    /// Resets the scheduler to its initial state
+    /// Schedules a task to run after a delay
+    func schedule(after delay: TimeInterval, action: @escaping () -> Void) -> ScheduledTask {
+        let task = ScheduledTask(
+            id: taskCounter,
+            fireTime: currentTime + delay,
+            action: action
+        )
+        
+        scheduledTasks.append(task)
+        scheduledTasks.sort { $0.fireTime < $1.fireTime }
+        taskCounter += 1
+        
+        return task
+    }
+    
+    /// Schedules a task to run at a specific time
+    func schedule(at time: TimeInterval, action: @escaping () -> Void) -> ScheduledTask {
+        let task = ScheduledTask(
+            id: taskCounter,
+            fireTime: time,
+            action: action
+        )
+        
+        scheduledTasks.append(task)
+        scheduledTasks.sort { $0.fireTime < $1.fireTime }
+        taskCounter += 1
+        
+        return task
+    }
+    
+    /// Cancels a scheduled task
+    func cancel(_ task: ScheduledTask) {
+        scheduledTasks.removeAll { $0.id == task.id }
+    }
+    
+    /// Cancels all scheduled tasks
+    func cancelAllTasks() {
+        scheduledTasks.removeAll()
+    }
+    
+    /// Returns the current virtual time
+    var now: TimeInterval {
+        return currentTime
+    }
+    
+    /// Returns the number of scheduled tasks
+    var scheduledTaskCount: Int {
+        return scheduledTasks.count
+    }
+    
+    /// Returns whether there are any scheduled tasks
+    var hasScheduledTasks: Bool {
+        return !scheduledTasks.isEmpty
+    }
+    
+    /// Resets the scheduler to initial state
     func reset() {
         currentTime = 0
-        scheduledWork.removeAll()
+        scheduledTasks.removeAll()
         isRunning = false
+        taskCounter = 0
     }
     
-    /// Gets the current number of scheduled work items
-    var scheduledWorkCount: Int {
-        return scheduledWork.count
-    }
+    // MARK: - Private Methods
     
-    /// Checks if there's any work scheduled
-    var hasScheduledWork: Bool {
-        return !scheduledWork.isEmpty
-    }
-}
-
-// MARK: - Test Scheduler Time
-
-struct TestSchedulerTime: Strideable, SchedulerTimeIntervalConvertible {
-    
-    let absolute: TimeInterval
-    
-    init(absolute: TimeInterval) {
-        self.absolute = absolute
-    }
-    
-    // MARK: - Strideable
-    
-    func distance(to other: TestSchedulerTime) -> Stride {
-        return Stride(other.absolute - absolute)
-    }
-    
-    func advanced(by n: Stride) -> TestSchedulerTime {
-        return TestSchedulerTime(absolute: absolute + n.magnitude)
-    }
-    
-    // MARK: - SchedulerTimeIntervalConvertible
-    
-    init(interval: Stride) {
-        self.absolute = interval.magnitude
-    }
-    
-    static func seconds(_ s: Int) -> TestSchedulerTime {
-        return TestSchedulerTime(absolute: TimeInterval(s))
-    }
-    
-    static func seconds(_ s: Double) -> TestSchedulerTime {
-        return TestSchedulerTime(absolute: s)
-    }
-    
-    static func milliseconds(_ ms: Int) -> TestSchedulerTime {
-        return TestSchedulerTime(absolute: TimeInterval(ms) / 1000.0)
-    }
-    
-    static func microseconds(_ us: Int) -> TestSchedulerTime {
-        return TestSchedulerTime(absolute: TimeInterval(us) / 1_000_000.0)
-    }
-    
-    static func nanoseconds(_ ns: Int) -> TestSchedulerTime {
-        return TestSchedulerTime(absolute: TimeInterval(ns) / 1_000_000_000.0)
-    }
-    
-    // MARK: - Stride
-    
-    struct Stride: SchedulerTimeIntervalConvertible, Comparable, SignedNumeric, Codable {
+    /// Processes any scheduled tasks that should have fired
+    private func processScheduledTasks() {
+        var tasksToExecute: [ScheduledTask] = []
         
-        let magnitude: TimeInterval
-        
-        init(_ magnitude: TimeInterval) {
-            self.magnitude = magnitude
+        // Find tasks that should fire
+        while let task = scheduledTasks.first, task.fireTime <= currentTime {
+            tasksToExecute.append(task)
+            scheduledTasks.removeFirst()
         }
         
-        init(integerLiteral value: Int) {
-            self.magnitude = TimeInterval(value)
-        }
-        
-        init?<T>(exactly source: T) where T: BinaryInteger {
-            self.magnitude = TimeInterval(source)
-        }
-        
-        // MARK: - Comparable
-        
-        static func < (lhs: Stride, rhs: Stride) -> Bool {
-            return lhs.magnitude < rhs.magnitude
-        }
-        
-        // MARK: - SignedNumeric
-        
-        static func + (lhs: Stride, rhs: Stride) -> Stride {
-            return Stride(lhs.magnitude + rhs.magnitude)
-        }
-        
-        static func - (lhs: Stride, rhs: Stride) -> Stride {
-            return Stride(lhs.magnitude - rhs.magnitude)
-        }
-        
-        static func * (lhs: Stride, rhs: Stride) -> Stride {
-            return Stride(lhs.magnitude * rhs.magnitude)
-        }
-        
-        static func / (lhs: Stride, rhs: Stride) -> Stride {
-            return Stride(lhs.magnitude / rhs.magnitude)
-        }
-        
-        static func += (lhs: inout Stride, rhs: Stride) {
-            lhs = Stride(lhs.magnitude + rhs.magnitude)
-        }
-        
-        static func -= (lhs: inout Stride, rhs: Stride) {
-            lhs = Stride(lhs.magnitude - rhs.magnitude)
-        }
-        
-        static func *= (lhs: inout Stride, rhs: Stride) {
-            lhs = Stride(lhs.magnitude * rhs.magnitude)
-        }
-        
-        static func /= (lhs: inout Stride, rhs: Stride) {
-            lhs = Stride(lhs.magnitude / rhs.magnitude)
-        }
-        
-        // MARK: - SchedulerTimeIntervalConvertible
-        
-        init(interval: Stride) {
-            self.magnitude = interval.magnitude
-        }
-        
-        static func seconds(_ s: Int) -> Stride {
-            return Stride(TimeInterval(s))
-        }
-        
-        static func seconds(_ s: Double) -> Stride {
-            return Stride(s)
-        }
-        
-        static func milliseconds(_ ms: Int) -> Stride {
-            return Stride(TimeInterval(ms) / 1000.0)
-        }
-        
-        static func microseconds(_ us: Int) -> Stride {
-            return Stride(TimeInterval(us) / 1_000_000.0)
-        }
-        
-        static func nanoseconds(_ ns: Int) -> Stride {
-            return Stride(TimeInterval(ns) / 1_000_000_000.0)
+        // Execute tasks
+        for task in tasksToExecute {
+            task.execute()
         }
     }
 }
 
-// MARK: - Scheduled Work
+// MARK: - ScheduledTask
 
-private struct ScheduledWork: Cancellable {
-    let time: TimeInterval
-    let interval: TimeInterval?
-    let action: () -> Void
+/// Represents a task scheduled in the test scheduler
+struct ScheduledTask: Identifiable, Equatable {
     
-    init(time: TimeInterval, action: @escaping () -> Void) {
-        self.time = time
-        self.interval = nil
+    // MARK: - Properties
+    
+    /// Unique identifier for the task
+    let id: Int
+    
+    /// Time when the task should fire
+    let fireTime: TimeInterval
+    
+    /// Action to execute when the task fires
+    private let action: () -> Void
+    
+    // MARK: - Initialization
+    
+    init(id: Int, fireTime: TimeInterval, action: @escaping () -> Void) {
+        self.id = id
+        self.fireTime = fireTime
         self.action = action
     }
     
-    init(time: TimeInterval, interval: TimeInterval?, action: @escaping () -> Void) {
-        self.time = time
-        self.interval = interval
-        self.action = action
+    // MARK: - Execution
+    
+    /// Executes the task action
+    func execute() {
+        action()
     }
+    
+    // MARK: - Equatable
+    
+    static func == (lhs: ScheduledTask, rhs: ScheduledTask) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
+// MARK: - TestScheduler Extensions
+
+extension TestScheduler {
+    
+    /// Creates a publisher that emits after a delay
+    func delayedPublisher<T>(after delay: TimeInterval, value: T) -> AnyPublisher<T, Never> {
+        return Just(value)
+            .delay(for: .seconds(delay), scheduler: self)
+            .eraseToAnyPublisher()
+    }
+    
+    /// Creates a publisher that emits multiple values with delays
+    func sequencePublisher<T>(_ values: [(T, TimeInterval)]) -> AnyPublisher<T, Never> {
+        let publishers = values.map { value, delay in
+            delayedPublisher(after: delay, value: value)
+        }
+        
+        return Publishers.MergeMany(publishers)
+            .eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Scheduler Protocol Conformance
+
+extension TestScheduler: Scheduler {
+    
+    var minimumTolerance: TimeInterval {
+        return 0
+    }
+    
+    var now: Date {
+        return Date(timeIntervalSince1970: currentTime)
+    }
+    
+    func schedule(options: SchedulerOptions?, _ action: @escaping () -> Void) {
+        schedule(after: 0, action: action)
+    }
+    
+    func schedule(after date: Date, tolerance: TimeInterval, options: SchedulerOptions?, _ action: @escaping () -> Void) {
+        let delay = date.timeIntervalSince1970 - currentTime
+        if delay > 0 {
+            schedule(after: delay, action: action)
+        } else {
+            schedule(after: 0, action: action)
+        }
+    }
+    
+    func schedule(after date: Date, interval: TimeInterval, tolerance: TimeInterval, options: SchedulerOptions?, _ action: @escaping () -> Void) -> Cancellable {
+        let delay = date.timeIntervalSince1970 - currentTime
+        let task = schedule(after: delay) {
+            action()
+            // Schedule next occurrence
+            _ = self.schedule(after: interval, action: action)
+        }
+        
+        return TestCancellable(task: task, scheduler: self)
+    }
+}
+
+// MARK: - TestCancellable
+
+/// Cancellable implementation for test scheduler
+private struct TestCancellable: Cancellable {
+    
+    let task: ScheduledTask
+    let scheduler: TestScheduler
     
     func cancel() {
-        // No-op for test scheduler
+        scheduler.cancel(task)
     }
 }
 
-// MARK: - AnyScheduler Wrapper
+// MARK: - Test Utilities
 
 extension TestScheduler {
     
-    /// Converts the test scheduler to AnyScheduler
-    var anyScheduler: AnyScheduler<TestSchedulerTime, Never> {
-        return AnyScheduler(self)
+    /// Waits for all scheduled tasks to complete
+    func waitForAllTasks() async throws {
+        while hasScheduledTasks {
+            try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        }
     }
     
-    /// Creates a test scheduler with AnyScheduler type
-    static func createAnyScheduler() -> AnyScheduler<TestSchedulerTime, Never> {
-        return TestScheduler().anyScheduler
-    }
-}
-
-// MARK: - Convenience Extensions
-
-extension TestScheduler {
-    
-    /// Advances by 1 second
-    func advance() {
-        advance(by: TestSchedulerTime.Stride(1))
+    /// Waits for a specific number of tasks to complete
+    func waitForTaskCount(_ count: Int) async throws {
+        while scheduledTaskCount > count {
+            try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        }
     }
     
-    /// Advances by 0.1 seconds
-    func advanceByTenth() {
-        advance(by: TestSchedulerTime.Stride(0.1))
-    }
-    
-    /// Advances by 0.01 seconds
-    func advanceByHundredth() {
-        advance(by: TestSchedulerTime.Stride(0.01))
-    }
-    
-    /// Advances by 0.001 seconds
-    func advanceByThousandth() {
-        advance(by: TestSchedulerTime.Stride(0.001))
+    /// Simulates time passing and waits for completion
+    func advanceAndWait(by timeInterval: TimeInterval) async throws {
+        advance(by: timeInterval)
+        try await waitForAllTasks()
     }
 }
 
-// MARK: - Publisher Extensions
+// MARK: - XCTestCase Extensions
 
-extension Publisher {
+extension XCTestCase {
     
-    /// Collects all values from a publisher using a test scheduler
-    /// - Parameter scheduler: The test scheduler to use
-    /// - Returns: Publisher that emits an array of all values
-    func collectWithTestScheduler(_ scheduler: TestScheduler) -> AnyPublisher<[Output], Failure> {
-        return self
-            .receive(on: scheduler)
-            .collect()
-            .eraseToAnyPublisher()
+    /// Creates a test scheduler for the test
+    func createTestScheduler() -> TestScheduler {
+        return TestScheduler()
+    }
+    
+    /// Waits for a condition with a test scheduler
+    func waitForCondition(
+        timeout: TimeInterval = 5.0,
+        condition: @escaping () -> Bool,
+        scheduler: TestScheduler
+    ) async throws {
+        let startTime = Date()
+        
+        while !condition() {
+            if Date().timeIntervalSince(startTime) > timeout {
+                throw XCTSkip("Condition not met within timeout")
+            }
+            
+            try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        }
     }
 } 

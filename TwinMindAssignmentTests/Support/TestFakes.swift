@@ -1,188 +1,51 @@
+//
+//  TestFakes.swift
+//  TwinMindAssignmentTests
+//
+//  PROPRIETARY SOFTWARE - Copyright (c) 2025 Ashutosh, DobbyFactory. All rights reserved.
+//  This software is confidential and proprietary. Unauthorized copying,
+//  distribution, or use is strictly prohibited.
+//
+//  Created by Ashutosh Pandey on 09/08/25.
+//
+
 import Foundation
 import Combine
-import SwiftUI
 @testable import TwinMindAssignment
 
-// MARK: - Fake Recording Session Repository
-
-final class FakeRecordingSessionRepository: RecordingSessionRepositoryProtocol {
-    
-    private var sessions: [RecordingSession] = []
-    private let sessionsSubject = PassthroughSubject<[RecordingSession], Error>()
-    
-    init(sessions: [RecordingSession] = []) {
-        self.sessions = sessions
-    }
-    
-    func fetchSessions() -> AnyPublisher<[RecordingSession], Error> {
-        return Just(sessions)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func fetchSession(id: UUID) -> AnyPublisher<RecordingSession?, Error> {
-        let session = sessions.first { $0.id == id }
-        return Just(session)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func createSession(_ session: RecordingSession) -> AnyPublisher<RecordingSession, Error> {
-        sessions.append(session)
-        sessionsSubject.send(sessions)
-        return Just(session)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func updateSession(_ session: RecordingSession) -> AnyPublisher<RecordingSession, Error> {
-        if let index = sessions.firstIndex(where: { $0.id == session.id }) {
-            sessions[index] = session
-            sessionsSubject.send(sessions)
-        }
-        return Just(session)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func deleteSession(_ session: RecordingSession) -> AnyPublisher<Void, Error> {
-        sessions.removeAll { $0.id == session.id }
-        sessionsSubject.send(sessions)
-        return Just(())
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func searchSessions(query: String) -> AnyPublisher<[RecordingSession], Error> {
-        let filtered = sessions.filter { $0.title.localizedCaseInsensitiveContains(query) }
-        return Just(filtered)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    // MARK: - Test Support
-    
-    func addSession(_ session: RecordingSession) {
-        sessions.append(session)
-        sessionsSubject.send(sessions)
-    }
-    
-    func clearSessions() {
-        sessions.removeAll()
-        sessionsSubject.send(sessions)
-    }
-    
-    func simulateError(_ error: Error) {
-        sessionsSubject.send(completion: .failure(error))
-    }
-}
-
-// MARK: - Fake Transcript Segment Repository
-
-final class FakeTranscriptSegmentRepository: TranscriptSegmentRepositoryProtocol {
-    
-    private var segments: [TranscriptSegment] = []
-    private let segmentsSubject = PassthroughSubject<[TranscriptSegment], Error>()
-    
-    var segmentClosedPublisher: AnyPublisher<TranscriptSegment, Never> {
-        // For now, return an empty publisher since we don't have segment closing logic yet
-        return Empty().eraseToAnyPublisher()
-    }
-    
-    init(segments: [TranscriptSegment] = []) {
-        self.segments = segments
-    }
-    
-    func fetchSegments(for sessionID: UUID) -> AnyPublisher<[TranscriptSegment], Error> {
-        let filtered = segments.filter { $0.sessionID == sessionID }
-        return Just(filtered)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func fetchPendingSegments() -> AnyPublisher<[TranscriptSegment], Error> {
-        let pending = segments.filter { $0.status == .pending }
-        return Just(pending)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func fetchSegmentsByStatus(_ status: SegmentStatus) -> AnyPublisher<[TranscriptSegment], Error> {
-        let filtered = segments.filter { $0.status == status }
-        return Just(filtered)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func createSegment(_ segment: TranscriptSegment) -> AnyPublisher<TranscriptSegment, Error> {
-        segments.append(segment)
-        segmentsSubject.send(segments)
-        return Just(segment)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func updateSegment(_ segment: TranscriptSegment) -> AnyPublisher<TranscriptSegment, Error> {
-        if let index = segments.firstIndex(where: { $0.id == segment.id }) {
-            segments[index] = segment
-            segmentsSubject.send(segments)
-        }
-        return Just(segment)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func retrySegment(_ segment: TranscriptSegment) -> AnyPublisher<TranscriptSegment, Error> {
-        var updatedSegment = segment
-        updatedSegment.failureCount = 0
-        updatedSegment.status = .pending
-        updatedSegment.lastError = nil
-        
-        if let index = segments.firstIndex(where: { $0.id == segment.id }) {
-            segments[index] = updatedSegment
-            segmentsSubject.send(segments)
-        }
-        
-        return Just(updatedSegment)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    // MARK: - Test Support
-    
-    func addSegment(_ segment: TranscriptSegment) {
-        segments.append(segment)
-        segmentsSubject.send(segments)
-    }
-    
-    func clearSegments() {
-        segments.removeAll()
-        segmentsSubject.send(segments)
-    }
-    
-    func simulateError(_ error: Error) {
-        segmentsSubject.send(completion: .failure(error))
-    }
-}
+/// Test fakes and mocks for unit testing
+/// 
+/// Provides fake implementations of protocols and dependencies
+/// to enable isolated unit testing without external dependencies.
+/// All fakes follow the XCTest Hygiene rules:
+/// - Deterministic behavior
+/// - Clear state management
+/// - Easy verification
+/// - No side effects
 
 // MARK: - Fake Audio Recorder
 
+/// Fake implementation of AudioRecorderProtocol for testing
 final class FakeAudioRecorder: AudioRecorderProtocol {
     
-    @Published var isRecording = false
+    // MARK: - Published Properties
+    
+    @Published var isRecording: Bool = false
     @Published var recordingState: RecordingState = .idle
     
-    private let levelSubject = PassthroughSubject<Float, Never>()
-    private let stateSubject = PassthroughSubject<RecordingState, Never>()
+    // MARK: - Publishers
     
     var levelPublisher: AnyPublisher<Float, Never> {
-        return levelSubject.eraseToAnyPublisher()
+        return Just(0.5).eraseToAnyPublisher()
     }
     
     var statePublisher: AnyPublisher<RecordingState, Never> {
         return $recordingState.eraseToAnyPublisher()
     }
     
+    // MARK: - Test Control
+    
+    /// Simulates starting recording
     func startRecording(session: RecordingSession, segmentSink: AudioSegmentSink) async throws {
         await MainActor.run {
             isRecording = true
@@ -190,6 +53,7 @@ final class FakeAudioRecorder: AudioRecorderProtocol {
         }
     }
     
+    /// Simulates stopping recording
     func stop() async {
         await MainActor.run {
             isRecording = false
@@ -197,465 +61,413 @@ final class FakeAudioRecorder: AudioRecorderProtocol {
         }
     }
     
+    /// Simulates pausing recording
     func pause() async {
         await MainActor.run {
             recordingState = .paused
         }
     }
     
+    /// Simulates resuming recording
     func resume() async {
         await MainActor.run {
             recordingState = .recording
         }
     }
     
-    // MARK: - Test Support
+    // MARK: - Test Helpers
     
-    func simulateLevelChange(_ level: Float) {
-        levelSubject.send(level)
+    /// Resets the fake to initial state
+    func reset() {
+        isRecording = false
+        recordingState = .idle
     }
     
-    func simulateRecordingState(_ state: RecordingState) {
-        recordingState = state
-        stateSubject.send(state)
-    }
-    
-    func simulateError(_ error: Error) {
-        // Simulate error in recording operations
-    }
-}
-
-// MARK: - Fake Transcription Orchestrator
-
-final class FakeTranscriptionOrchestrator: TranscriptionOrchestratorProtocol {
-    
-    @Published var isRunning = false
-    @Published var queueStatus = TranscriptionOrchestrator.QueueStatus()
-    
-    private let eventsSubject = PassthroughSubject<OrchestratorEvent, Never>()
-    
-    var eventsPublisher: AnyPublisher<OrchestratorEvent, Never> {
-        return eventsSubject.eraseToAnyPublisher()
-    }
-    
-    func start() {
-        isRunning = true
-        eventsSubject.send(.segmentQueued(sessionID: UUID(), segmentIndex: 0))
-    }
-    
-    func stop() {
-        isRunning = false
-        eventsSubject.send(.orchestratorPaused(reason: "Stopped"))
-    }
-    
-    func addSegmentToQueue(_ segment: TranscriptSegment) {
-        eventsSubject.send(.segmentQueued(sessionID: segment.sessionID, segmentIndex: segment.index))
-    }
-    
-    // MARK: - Test Support
-    
-    func simulateSegmentProcessing(sessionID: UUID, segmentIndex: Int) {
-        eventsSubject.send(.segmentProcessing(sessionID: sessionID, segmentIndex: segmentIndex))
-    }
-    
-    func simulateSegmentCompleted(sessionID: UUID, segmentIndex: Int, result: TranscriptionResult) {
-        eventsSubject.send(.segmentCompleted(sessionID: sessionID, segmentIndex: segmentIndex, result: result))
-    }
-    
-    func simulateSegmentFailed(sessionID: UUID, segmentIndex: Int, error: APIError, failureCount: Int) {
-        eventsSubject.send(.segmentFailed(sessionID: sessionID, segmentIndex: segmentIndex, error: error, failureCount: failureCount))
-    }
-    
-    func simulateFallbackTriggered(sessionID: UUID, segmentIndex: Int, reason: String) {
-        eventsSubject.send(.fallbackTriggered(sessionID: sessionID, segmentIndex: segmentIndex, reason: reason))
-    }
-    
-    func simulateNetworkReachabilityChange(isReachable: Bool, connectionType: Reachability.ConnectionType) {
-        eventsSubject.send(.networkReachabilityChanged(isReachable: isReachable, connectionType: connectionType))
-    }
-}
-
-// MARK: - Fake Reachability
-
-final class FakeReachability: ReachabilityProtocol {
-    
-    @Published var isReachable = true
-    @Published var connectionType: Reachability.ConnectionType = .wifi
-    @Published var isExpensive = false
-    
-    private let reachabilitySubject = PassthroughSubject<Bool, Never>()
-    
-    var reachabilityPublisher: AnyPublisher<Bool, Never> {
-        return reachabilitySubject.eraseToAnyPublisher()
-    }
-    
-    // MARK: - Test Support
-    
-    func simulateNetworkChange(isReachable: Bool, connectionType: Reachability.ConnectionType = .wifi, isExpensive: Bool = false) {
-        self.isReachable = isReachable
-        self.connectionType = connectionType
-        self.isExpensive = isExpensive
-        reachabilitySubject.send(isReachable)
-    }
-    
-    func simulateNetworkLoss() {
-        simulateNetworkChange(isReachable: false, connectionType: .unknown)
-    }
-    
-    func simulateNetworkRestoration() {
-        simulateNetworkChange(isReachable: true, connectionType: .wifi)
-    }
-}
-
-// MARK: - Fake Background Task Manager
-
-final class FakeBackgroundTaskManager: BackgroundTaskManagerProtocol {
-    
-    @Published var isRegistered = false
-    
-    var isBackgroundTasksSupported: Bool = true
-    
-    func registerBackgroundTasks() {
-        isRegistered = true
-    }
-    
-    func scheduleTranscriptionProcessing(sessionID: UUID?) {
-        // No-op for testing
-    }
-    
-    func scheduleOfflineQueueProcessing(sessionID: UUID?) {
-        // No-op for testing
-    }
-    
-    // MARK: - Test Support
-    
-    func simulateRegistration() {
-        isRegistered = true
-    }
-    
-    func simulateUnregistration() {
-        isRegistered = false
+    /// Simulates a recording error
+    func simulateError(_ error: RecordingError) {
+        // In a real implementation, this would trigger error handling
+        print("FakeAudioRecorder: Simulating error: \(error)")
     }
 }
 
 // MARK: - Fake Permission Manager
 
-final class FakePermissionManager: ObservableObject {
+/// Fake implementation of PermissionManager for testing
+final class FakePermissionManager: PermissionManager {
     
-    @Published var microphonePermission: PermissionManager.PermissionState = .authorized
-    @Published var speechRecognitionPermission: PermissionManager.PermissionState = .authorized
+    // MARK: - Test State
     
-    private let permissionStateSubject = PassthroughSubject<PermissionManager.PermissionState, Never>()
+    private var simulatedMicrophonePermission: AVAudioSession.RecordPermission = .undetermined
+    private var simulatedSpeechPermission: SFSpeechRecognizerAuthorizationStatus = .notDetermined
     
-    var permissionStatePublisher: AnyPublisher<PermissionManager.PermissionState, Never> {
-        return Publishers.CombineLatest($microphonePermission, $speechRecognitionPermission)
-            .map { mic, speech in
-                if mic == .denied || speech == .denied {
-                    return .denied
-                } else if mic == .restricted || speech == .restricted {
-                    return .restricted
-                } else if mic == .authorized && speech == .authorized {
-                    return .authorized
-                } else if mic == .notDetermined || speech == .notDetermined {
-                    return .notDetermined
-                } else {
-                    return .unavailable
-                }
-            }
-            .eraseToAnyPublisher()
+    // MARK: - Test Control
+    
+    /// Simulates a permission change
+    func simulatePermissionChange(microphone: AVAudioSession.RecordPermission, speech: SFSpeechRecognizerAuthorizationStatus) {
+        simulatedMicrophonePermission = microphone
+        simulatedSpeechPermission = speech
     }
     
-    func requestMicrophonePermission() -> AnyPublisher<PermissionManager.PermissionState, Never> {
-        return Just(microphonePermission)
-            .eraseToAnyPublisher()
-    }
-    
-    func requestSpeechRecognitionPermission() -> AnyPublisher<PermissionManager.PermissionState, Never> {
-        return Just(speechRecognitionPermission)
-            .eraseToAnyPublisher()
-    }
-    
-    func requestAllPermissions() -> AnyPublisher<[PermissionManager.PermissionState], Never> {
-        return Just([microphonePermission, speechRecognitionPermission])
-            .eraseToAnyPublisher()
-    }
-    
+    /// Simulates opening app settings
     func openAppSettings() {
-        // No-op for testing
+        print("FakePermissionManager: Simulating opening app settings")
     }
     
-    func getPermissionState(for type: PermissionManager.PermissionType) -> PermissionManager.PermissionState {
-        switch type {
-        case .microphone:
-            return microphonePermission
-        case .speechRecognition:
-            return speechRecognitionPermission
-        }
+    // MARK: - Overridden Methods
+    
+    override var microphonePermissionStatus: AVAudioSession.RecordPermission {
+        return simulatedMicrophonePermission
     }
     
-    var allPermissionsGranted: Bool {
-        return microphonePermission.isAuthorized && speechRecognitionPermission.isAuthorized
+    override var speechRecognitionPermissionStatus: SFSpeechRecognizerAuthorizationStatus {
+        return simulatedSpeechPermission
     }
     
-    var permissionSummary: String {
-        let micStatus = "Microphone: \(microphonePermission.rawValue)"
-        let speechStatus = "Speech Recognition: \(speechRecognitionPermission.rawValue)"
-        return "\(micStatus), \(speechStatus)"
-    }
-    
-    // MARK: - Test Support
-    
-    func simulatePermissionChange(for type: PermissionManager.PermissionType, to state: PermissionManager.PermissionState) {
-        switch type {
-        case .microphone:
-            microphonePermission = state
-        case .speechRecognition:
-            speechRecognitionPermission = state
-        }
-    }
-    
-    func resetPermissionsForTesting() {
-        microphonePermission = .notDetermined
-        speechRecognitionPermission = .notDetermined
-    }
-    
-    func simulatePermissionRequest(for type: PermissionManager.PermissionType, willGrant: Bool) {
-        let newState: PermissionManager.PermissionState = willGrant ? .authorized : .denied
-        simulatePermissionChange(for: type, to: newState)
-    }
-}
-
-// MARK: - Fake Error Presenter
-
-final class FakeErrorPresenter: ObservableObject {
-    
-    @Published var currentError: UserFacingError?
-    @Published var errorHistory: [UserFacingError] = []
-    @Published var isShowingError = false
-    
-    private let errorEventsSubject = PassthroughSubject<UserFacingError, Never>()
-    
-    let errorEvents = PassthroughSubject<UserFacingError, Never>()
-    
-    func presentError(_ error: UserFacingError) {
-        currentError = error
-        errorHistory.append(error)
-        isShowingError = true
-        errorEvents.send(error)
-    }
-    
-    func dismissCurrentError() {
-        currentError = nil
-        isShowingError = false
-    }
-    
-    func clearErrorHistory() {
-        errorHistory.removeAll()
-    }
-    
-    func getErrorsByCategory(_ category: ErrorCategory) -> [UserFacingError] {
-        return errorHistory.filter { $0.category == category }
-    }
-    
-    func getErrorsBySeverity(_ severity: ErrorSeverity) -> [UserFacingError] {
-        return errorHistory.filter { $0.severity == severity }
-    }
-    
-    // MARK: - Test Support
-    
-    func simulateError(_ error: UserFacingError) {
-        presentError(error)
-    }
-    
-    func clearAllErrors() {
-        currentError = nil
-        errorHistory.removeAll()
-        isShowingError = false
-    }
-}
-
-// MARK: - Fake Export Service
-
-final class FakeExportService: ObservableObject {
-    
-    @Published var isExporting = false
-    @Published var exportProgress: Double = 0.0
-    @Published var lastExportURL: URL?
-    
-    func exportSession(
-        _ session: RecordingSession,
-        options: ExportService.ExportOptions = .default
-    ) -> AnyPublisher<URL, Error> {
-        isExporting = true
-        exportProgress = 0.0
-        
-        // Simulate export progress
-        Timer.publish(every: 0.1, on: .main, in: .common)
-            .autoconnect()
-            .sink { _ in
-                if self.exportProgress < 1.0 {
-                    self.exportProgress += 0.1
-                } else {
-                    self.isExporting = false
-                    self.lastExportURL = URL(fileURLWithPath: "/tmp/fake_export.txt")
-                }
-            }
-            .store(in: &cancellables)
-        
-        return Just(URL(fileURLWithPath: "/tmp/fake_export.txt"))
-            .setFailureType(to: Error.self)
+    override func requestMicrophonePermission() -> AnyPublisher<Bool, Never> {
+        return Just(simulatedMicrophonePermission == .granted)
             .eraseToAnyPublisher()
     }
     
-    func exportSessions(
-        _ sessions: [RecordingSession],
-        options: ExportService.ExportOptions = .default
-    ) -> AnyPublisher<URL, Error> {
-        isExporting = true
-        exportProgress = 0.0
-        
-        // Simulate export progress
-        Timer.publish(every: 0.1, on: .main, in: .common)
-            .autoconnect()
-            .sink { _ in
-                if self.exportProgress < 1.0 {
-                    self.exportProgress += 0.1
-                } else {
-                    self.isExporting = false
-                    self.lastExportURL = URL(fileURLWithPath: "/tmp/fake_batch_export.txt")
-                }
-            }
-            .store(in: &cancellables)
-        
-        return Just(URL(fileURLWithPath: "/tmp/fake_batch_export.txt"))
-            .setFailureType(to: Error.self)
+    override func requestSpeechRecognitionPermission() -> AnyPublisher<SFSpeechRecognizerAuthorizationStatus, Never> {
+        return Just(simulatedSpeechPermission)
             .eraseToAnyPublisher()
     }
     
-    func shareExportedFile(_ fileURL: URL) {
-        // No-op for testing
-    }
+    // MARK: - Test Helpers
     
-    // MARK: - Test Support
-    
-    private var cancellables = Set<AnyCancellable>()
-    
-    func simulateExportFailure(_ error: Error) {
-        isExporting = false
-        exportProgress = 0.0
-    }
-    
-    func resetExportState() {
-        isExporting = false
-        exportProgress = 0.0
-        lastExportURL = nil
+    /// Resets the fake to initial state
+    func reset() {
+        simulatedMicrophonePermission = .undetermined
+        simulatedSpeechPermission = .notDetermined
     }
 }
 
-// MARK: - Convenience Initializers
+// MARK: - Fake Transcription Orchestrator
 
-extension FakeRecordingSessionRepository {
+/// Fake implementation of TranscriptionOrchestrator for testing
+final class FakeTranscriptionOrchestrator: TranscriptionOrchestratorProtocol {
     
-    static func withSampleSessions() -> FakeRecordingSessionRepository {
-        let sessions = [
-            RecordingSession(title: "Test Session 1", notes: "First test session"),
-            RecordingSession(title: "Test Session 2", notes: "Second test session"),
-            RecordingSession(title: "Test Session 3", notes: "Third test session")
-        ]
-        return FakeRecordingSessionRepository(sessions: sessions)
+    // MARK: - Test State
+    
+    private var isRunning: Bool = false
+    private var queuedSegments: [TranscriptSegment] = []
+    private var processingSegments: [TranscriptSegment] = []
+    private var completedSegments: [TranscriptSegment] = []
+    private var failedSegments: [TranscriptSegment] = []
+    
+    // MARK: - Test Control
+    
+    /// Simulates starting the orchestrator
+    func start() async throws {
+        isRunning = true
+        print("FakeTranscriptionOrchestrator: Started")
     }
     
-    static func empty() -> FakeRecordingSessionRepository {
-        return FakeRecordingSessionRepository(sessions: [])
+    /// Simulates stopping the orchestrator
+    func stop() async {
+        isRunning = false
+        print("FakeTranscriptionOrchestrator: Stopped")
+    }
+    
+    /// Simulates enqueueing a segment
+    func enqueueSegment(_ segment: TranscriptSegment) async throws {
+        queuedSegments.append(segment)
+        print("FakeTranscriptionOrchestrator: Enqueued segment \(segment.index)")
+    }
+    
+    /// Simulates processing a segment
+    func processSegment(_ segment: TranscriptSegment) async throws {
+        guard let index = queuedSegments.firstIndex(where: { $0.id == segment.id }) else {
+            throw TranscriptionError.invalidRequest
+        }
+        
+        queuedSegments.remove(at: index)
+        processingSegments.append(segment)
+        
+        // Simulate processing delay
+        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        
+        // Move to completed
+        if let processingIndex = processingSegments.firstIndex(where: { $0.id == segment.id }) {
+            processingSegments.remove(at: processingIndex)
+            completedSegments.append(segment)
+        }
+        
+        print("FakeTranscriptionOrchestrator: Processed segment \(segment.index)")
+    }
+    
+    // MARK: - Test Helpers
+    
+    /// Returns the count of queued segments
+    var queuedCount: Int {
+        return queuedSegments.count
+    }
+    
+    /// Returns the count of processing segments
+    var processingCount: Int {
+        return processingSegments.count
+    }
+    
+    /// Returns the count of completed segments
+    var completedCount: Int {
+        return completedSegments.count
+    }
+    
+    /// Returns the count of failed segments
+    var failedCount: Int {
+        return failedSegments.count
+    }
+    
+    /// Resets the fake to initial state
+    func reset() {
+        isRunning = false
+        queuedSegments.removeAll()
+        processingSegments.removeAll()
+        completedSegments.removeAll()
+        failedSegments.removeAll()
+    }
+    
+    /// Simulates a failure for a specific segment
+    func simulateFailure(for segment: TranscriptSegment, error: Error) {
+        if let index = processingSegments.firstIndex(where: { $0.id == segment.id }) {
+            processingSegments.remove(at: index)
+            failedSegments.append(segment)
+        }
     }
 }
 
-extension FakeTranscriptSegmentRepository {
+// MARK: - Fake Reachability
+
+/// Fake implementation of Reachability for testing
+final class FakeReachability: ReachabilityProtocol {
     
-    static func withSampleSegments() -> FakeTranscriptSegmentRepository {
-        let sessionID = UUID()
-        let segments = [
-            TranscriptSegment(sessionID: sessionID, index: 1, startTime: 0, duration: 30.0, status: .pending),
-            TranscriptSegment(sessionID: sessionID, index: 2, startTime: 30, duration: 30.0, status: .transcribed),
-            TranscriptSegment(sessionID: sessionID, index: 3, startTime: 60, duration: 30.0, status: .failed)
-        ]
-        return FakeTranscriptSegmentRepository(segments: segments)
+    // MARK: - Test State
+    
+    private var isReachable: Bool = true
+    private var connectionType: ConnectionType = .wifi
+    private var isExpensive: Bool = false
+    
+    // MARK: - Test Control
+    
+    /// Simulates a network change
+    func simulateNetworkChange(isReachable: Bool, connectionType: ConnectionType = .wifi, isExpensive: Bool = false) {
+        self.isReachable = isReachable
+        self.connectionType = connectionType
+        self.isExpensive = isExpensive
+        
+        // Notify observers
+        NotificationCenter.default.post(
+            name: .reachabilityChanged,
+            object: self,
+            userInfo: [
+                "isReachable": isReachable,
+                "connectionType": connectionType,
+                "isExpensive": isExpensive
+            ]
+        )
     }
     
-    static func empty() -> FakeTranscriptSegmentRepository {
-        return FakeTranscriptSegmentRepository(segments: [])
+    // MARK: - Protocol Implementation
+    
+    var isReachablePublisher: AnyPublisher<Bool, Never> {
+        return Just(isReachable).eraseToAnyPublisher()
+    }
+    
+    var connectionTypePublisher: AnyPublisher<ConnectionType, Never> {
+        return Just(connectionType).eraseToAnyPublisher()
+    }
+    
+    var isExpensivePublisher: AnyPublisher<Bool, Never> {
+        return Just(isExpensive).eraseToAnyPublisher()
+    }
+    
+    // MARK: - Test Helpers
+    
+    /// Resets the fake to initial state
+    func reset() {
+        isReachable = true
+        connectionType = .wifi
+        isExpensive = false
     }
 }
 
-extension FakeAudioRecorder {
+// MARK: - Fake Background Task Manager
+
+/// Fake implementation of BackgroundTaskManager for testing
+final class FakeBackgroundTaskManager: BackgroundTaskManagerProtocol {
     
-    static func recording() -> FakeAudioRecorder {
-        let recorder = FakeAudioRecorder()
-        recorder.isRecording = true
-        recorder.recordingState = .recording
-        return recorder
+    // MARK: - Test State
+    
+    private var isBackgroundTasksSupported: Bool = true
+    private var scheduledTasks: [String: Bool] = [:]
+    
+    // MARK: - Test Control
+    
+    /// Simulates background task support change
+    func simulateBackgroundTaskSupport(_ supported: Bool) {
+        isBackgroundTasksSupported = supported
     }
     
-    static func idle() -> FakeAudioRecorder {
-        let recorder = FakeAudioRecorder()
-        recorder.isRecording = false
-        recorder.recordingState = .idle
-        return recorder
+    /// Simulates scheduling a background task
+    func simulateScheduleTask(_ identifier: String) {
+        scheduledTasks[identifier] = true
+    }
+    
+    // MARK: - Protocol Implementation
+    
+    func scheduleTranscriptionProcessingTask() async throws -> Bool {
+        let identifier = "transcription_processing"
+        scheduledTasks[identifier] = true
+        return isBackgroundTasksSupported
+    }
+    
+    func scheduleOfflineQueueProcessingTask() async throws -> Bool {
+        let identifier = "offline_queue_processing"
+        scheduledTasks[identifier] = true
+        return isBackgroundTasksSupported
+    }
+    
+    func scheduleCleanupTask() async throws -> Bool {
+        let identifier = "cleanup"
+        scheduledTasks[identifier] = true
+        return isBackgroundTasksSupported
+    }
+    
+    // MARK: - Test Helpers
+    
+    /// Returns whether a task is scheduled
+    func isTaskScheduled(_ identifier: String) -> Bool {
+        return scheduledTasks[identifier] ?? false
+    }
+    
+    /// Returns all scheduled task identifiers
+    var scheduledTaskIdentifiers: [String] {
+        return Array(scheduledTasks.keys)
+    }
+    
+    /// Resets the fake to initial state
+    func reset() {
+        isBackgroundTasksSupported = true
+        scheduledTasks.removeAll()
     }
 }
 
-extension FakeTranscriptionOrchestrator {
+// MARK: - Fake Segment Writer
+
+/// Fake implementation of SegmentWriter for testing
+final class FakeSegmentWriter: SegmentWriterProtocol {
     
-    static func running() -> FakeTranscriptionOrchestrator {
-        let orchestrator = FakeTranscriptionOrchestrator()
-        orchestrator.isRunning = true
-        return orchestrator
+    // MARK: - Test State
+    
+    private var writtenSegments: [String: Data] = [:]
+    private var shouldFail: Bool = false
+    private var failureError: Error = SegmentWriterError.insufficientDiskSpace
+    
+    // MARK: - Test Control
+    
+    /// Simulates a write failure
+    func simulateFailure(_ error: Error) {
+        shouldFail = true
+        failureError = error
     }
     
-    static func stopped() -> FakeTranscriptionOrchestrator {
-        let orchestrator = FakeTranscriptionOrchestrator()
-        orchestrator.isRunning = false
-        return orchestrator
+    /// Simulates successful writes
+    func simulateSuccess() {
+        shouldFail = false
+    }
+    
+    // MARK: - Protocol Implementation
+    
+    func writeSegment(_ data: Data, sessionID: UUID, segmentIndex: Int, segmentDuration: TimeInterval, channels: Int) async throws -> URL {
+        if shouldFail {
+            throw failureError
+        }
+        
+        let key = "\(sessionID.uuidString)_\(segmentIndex)"
+        writtenSegments[key] = data
+        
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("fake_segment_\(sessionID.uuidString)_\(segmentIndex).m4a")
+        
+        return tempURL
+    }
+    
+    func deleteSession(_ sessionID: UUID) throws {
+        // Remove all segments for this session
+        let keysToRemove = writtenSegments.keys.filter { $0.hasPrefix(sessionID.uuidString) }
+        for key in keysToRemove {
+            writtenSegments.removeValue(forKey: key)
+        }
+    }
+    
+    func sessionExists(_ sessionID: UUID) -> Bool {
+        return writtenSegments.keys.contains { $0.hasPrefix(sessionID.uuidString) }
+    }
+    
+    // MARK: - Test Helpers
+    
+    /// Returns the data for a specific segment
+    func getSegmentData(sessionID: UUID, segmentIndex: Int) -> Data? {
+        let key = "\(sessionID.uuidString)_\(segmentIndex)"
+        return writtenSegments[key]
+    }
+    
+    /// Returns the count of written segments
+    var writtenSegmentCount: Int {
+        return writtenSegments.count
+    }
+    
+    /// Resets the fake to initial state
+    func reset() {
+        writtenSegments.removeAll()
+        shouldFail = false
+        failureError = SegmentWriterError.insufficientDiskSpace
     }
 }
 
-extension FakeReachability {
-    
-    static func online() -> FakeReachability {
-        let reachability = FakeReachability()
-        reachability.isReachable = true
-        reachability.connectionType = .wifi
-        return reachability
-    }
-    
-    static func offline() -> FakeReachability {
-        let reachability = FakeReachability()
-        reachability.isReachable = false
-        reachability.connectionType = .unknown
-        return reachability
-    }
-}
+// MARK: - Test Utilities
 
-extension FakePermissionManager {
+/// Utility functions for testing
+enum TestUtilities {
     
-    static func allGranted() -> FakePermissionManager {
-        let manager = FakePermissionManager()
-        manager.microphonePermission = .authorized
-        manager.speechRecognitionPermission = .authorized
-        return manager
+    /// Creates a test session with specified parameters
+    static func createTestSession(
+        title: String = "Test Session",
+        startedAt: Date = Date(),
+        segments: [TranscriptSegment] = []
+    ) -> RecordingSession {
+        let session = RecordingSession(title: title, startedAt: startedAt)
+        session.segments = segments
+        return session
     }
     
-    static func allDenied() -> FakePermissionManager {
-        let manager = FakePermissionManager()
-        manager.microphonePermission = .denied
-        manager.speechRecognitionPermission = .denied
-        return manager
+    /// Creates a test segment with specified parameters
+    static func createTestSegment(
+        sessionID: UUID = UUID(),
+        index: Int = 0,
+        startAt: Date = Date(),
+        endAt: Date? = nil,
+        status: SegmentStatus = .queued
+    ) -> TranscriptSegment {
+        let segment = TranscriptSegment(
+            sessionID: sessionID,
+            index: index,
+            startAt: startAt,
+            endAt: endAt ?? startAt.addingTimeInterval(30)
+        )
+        segment.status = status
+        return segment
     }
     
-    static func mixed() -> FakePermissionManager {
-        let manager = FakePermissionManager()
-        manager.microphonePermission = .authorized
-        manager.speechRecognitionPermission = .denied
-        return manager
+    /// Waits for a specified duration (useful for testing async operations)
+    static func wait(seconds: TimeInterval) async throws {
+        try await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+    }
+    
+    /// Creates test audio data
+    static func createTestAudioData(sampleRate: Double = 16000, duration: TimeInterval = 1.0) -> Data {
+        let frameCount = Int(sampleRate * duration)
+        let sampleCount = frameCount * 4 // 32-bit float samples
+        return Data(repeating: 0, count: sampleCount)
     }
 } 
