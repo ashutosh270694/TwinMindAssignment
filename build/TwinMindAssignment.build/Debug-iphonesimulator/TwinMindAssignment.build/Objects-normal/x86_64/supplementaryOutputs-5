@@ -1,0 +1,24 @@
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Orchestration/SpeechRecognitionFallback.swift":
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SpeechRecognitionFallback.swiftconstvalues"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SpeechRecognitionFallback.swiftdeps"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SpeechRecognitionFallback.o"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SpeechRecognitionFallback.d"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SpeechRecognitionFallback.dia"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Features/SettingsView.swift":
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SettingsView.swiftconstvalues"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SettingsView.swiftdeps"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SettingsView.dia"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SettingsView.o"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/SettingsView.d"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Segments/Segmenter.swift":
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/Segmenter.dia"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/Segmenter.d"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/Segmenter.swiftdeps"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/Segmenter.o"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/Segmenter.swiftconstvalues"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Features/RecordingView.swift":
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RecordingView.dia"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RecordingView.swiftconstvalues"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RecordingView.swiftdeps"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RecordingView.o"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RecordingView.d"

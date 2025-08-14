@@ -1,24 +1,24 @@
-"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Network/APIError.swift":
-  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APIError.swiftdeps"
-  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APIError.dia"
-  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APIError.swiftconstvalues"
-  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APIError.d"
-  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APIError.o"
-"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Segments/SegmentWriter.swift":
-  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SegmentWriter.dia"
-  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SegmentWriter.swiftconstvalues"
-  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SegmentWriter.swiftdeps"
-  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SegmentWriter.d"
-  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SegmentWriter.o"
-"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Network/SettingsView.swift":
-  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SettingsView.d"
-  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SettingsView.swiftconstvalues"
-  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SettingsView.dia"
-  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SettingsView.o"
-  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SettingsView.swiftdeps"
-"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Features/StatusChip.swift":
-  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/StatusChip.dia"
-  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/StatusChip.swiftdeps"
-  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/StatusChip.swiftconstvalues"
-  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/StatusChip.d"
-  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/StatusChip.o"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Audio/AudioSessionManager.swift":
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/AudioSessionManager.swiftdeps"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/AudioSessionManager.swiftconstvalues"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/AudioSessionManager.d"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/AudioSessionManager.dia"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/AudioSessionManager.o"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Features/SessionsListView.swift":
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SessionsListView.o"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SessionsListView.d"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SessionsListView.swiftdeps"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SessionsListView.dia"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SessionsListView.swiftconstvalues"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Data/SwiftDataStack.swift":
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SwiftDataStack.swiftdeps"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SwiftDataStack.o"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SwiftDataStack.swiftconstvalues"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SwiftDataStack.dia"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/SwiftDataStack.d"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Features/ErrorPresenter.swift":
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/ErrorPresenter.d"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/ErrorPresenter.swiftconstvalues"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/ErrorPresenter.o"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/ErrorPresenter.swiftdeps"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/ErrorPresenter.dia"

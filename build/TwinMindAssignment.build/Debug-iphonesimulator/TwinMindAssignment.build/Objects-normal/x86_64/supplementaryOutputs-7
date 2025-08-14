@@ -1,0 +1,24 @@
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Network/TranscriptionAPIClient.swift":
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/TranscriptionAPIClient.d"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/TranscriptionAPIClient.dia"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/TranscriptionAPIClient.swiftconstvalues"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/TranscriptionAPIClient.swiftdeps"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/TranscriptionAPIClient.o"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Orchestration/BackgroundTaskManager.swift":
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/BackgroundTaskManager.d"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/BackgroundTaskManager.swiftdeps"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/BackgroundTaskManager.swiftconstvalues"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/BackgroundTaskManager.dia"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/BackgroundTaskManager.o"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Audio/AudioRecorderEngine.swift":
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/AudioRecorderEngine.swiftconstvalues"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/AudioRecorderEngine.d"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/AudioRecorderEngine.swiftdeps"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/AudioRecorderEngine.o"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/AudioRecorderEngine.dia"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Network/RetryBackoffOperator.swift":
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RetryBackoffOperator.swiftconstvalues"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RetryBackoffOperator.d"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RetryBackoffOperator.o"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RetryBackoffOperator.swiftdeps"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/x86_64/RetryBackoffOperator.dia"

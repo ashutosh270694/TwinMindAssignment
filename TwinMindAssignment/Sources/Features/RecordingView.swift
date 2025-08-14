@@ -420,7 +420,7 @@ final class RecordingViewModel: ObservableObject {
         self.recordingSessionRepository = environment.recordingSessionRepository
         
         // Create live transcription service
-        let tokenProvider = APITokenProviderWrapper(tokenManager: TokenManager())
+        let tokenProvider = TokenManager()
         let transcriptionService = OpenAITranscriber(tokenProvider: tokenProvider)
         self.liveTranscriptionViewModel = LiveTranscriptionViewModel(service: transcriptionService)
         

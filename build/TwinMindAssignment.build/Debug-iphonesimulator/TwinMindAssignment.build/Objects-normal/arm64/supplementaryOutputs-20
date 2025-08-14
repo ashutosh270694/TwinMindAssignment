@@ -1,0 +1,18 @@
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Orchestration/OrchestratorEvent.swift":
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/OrchestratorEvent.swiftconstvalues"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/OrchestratorEvent.d"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/OrchestratorEvent.swiftdeps"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/OrchestratorEvent.dia"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/OrchestratorEvent.o"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/TwinMindAssignment/Sources/Core/Protocols/APITokenProvider.swift":
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APITokenProvider.dia"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APITokenProvider.d"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APITokenProvider.swiftdeps"
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APITokenProvider.o"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/APITokenProvider.swiftconstvalues"
+"/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/DerivedSources/GeneratedAssetSymbols.swift":
+  object: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  swift-dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps"
+  diagnostics: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/GeneratedAssetSymbols.dia"
+  const-values: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues"
+  dependencies: "/Users/ashutosh/Desktop/TwinMindAssignment/TwinMindAssignment/build/TwinMindAssignment.build/Debug-iphonesimulator/TwinMindAssignment.build/Objects-normal/arm64/GeneratedAssetSymbols.d"

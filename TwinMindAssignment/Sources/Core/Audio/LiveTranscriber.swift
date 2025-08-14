@@ -22,7 +22,7 @@ public struct TranscriptEvent: Sendable, Equatable {
     }
 }
 
-public protocol APITokenProvider { func currentToken() async throws -> String }
+// APITokenProvider protocol moved to TwinMindAssignment/Sources/Core/Protocols/APITokenProvider.swift
 
 // MARK: - WAV Encoder (PCM16 -> WAV)
 

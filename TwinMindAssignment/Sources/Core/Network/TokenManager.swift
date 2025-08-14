@@ -2,13 +2,25 @@ import Foundation
 import Security
 import Combine // Added for AnyPublisher
 
+// MARK: - APITokenProvider Protocol Import
+// Note: This protocol is defined in TwinMindAssignment/Sources/Core/Protocols/APITokenProvider.swift
+
 /// Manages authentication tokens using Keychain with simple validation
-final class TokenManager {
+final class TokenManager: APITokenProvider {
     
     // MARK: - Properties
     
     private let service = "com.twinmind.whisper"
     private let account = "whisper_api_key"
+    
+    // MARK: - APITokenProvider Conformance
+    
+    func currentToken() async throws -> String {
+        guard let token = getToken(), !token.isEmpty else {
+            throw NSError(domain: "TokenManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "No valid token available"])
+        }
+        return token
+    }
     
     // MARK: - Public Methods
     

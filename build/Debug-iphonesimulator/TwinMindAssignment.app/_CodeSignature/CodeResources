@@ -12,21 +12,9 @@
 		<data>
 		n57qDP4tZfLD1rCS43W0B4LQjzE=
 		</data>
-		<key>TestAudio.m4a</key>
-		<data>
-		a3ObkW8efJg5+gf5zgjeaF6dr+E=
-		</data>
 	</dict>
 	<key>files2</key>
-	<dict>
-		<key>TestAudio.m4a</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			SVfdo9QMuv3Yh+UwfH2bi/s86MH8ZOPaNBcIFYbZGjk=
-			</data>
-		</dict>
-	</dict>
+	<dict/>
 	<key>rules</key>
 	<dict>
 		<key>^.*</key>
